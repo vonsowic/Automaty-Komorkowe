@@ -1,12 +1,22 @@
 package com.bearcave.automaty;
 
-import com.sun.org.apache.xpath.internal.operations.String;
+import java.util.Set;
 
 /**
  * Created by miwas on 05.11.16.
  */
 public class GameOfLife extends Automaton2Dim {
-    public static void main(String[] args){
-        System.out.println("Hello, world");
+
+    protected Automaton newInstance(CellStateFactory cellStateFactory, CellNeighborhood cellNeighborhood) {
+
+        return null;
+    }
+
+    protected CellCoordinates nextCoordinates(CellCoordinates cellCoordinates) {
+        return null;
+    }
+
+    protected CellState nextCellState(CellState currentState, Set<Cell> neighborsStates) {
+        return null;
     }
 }
