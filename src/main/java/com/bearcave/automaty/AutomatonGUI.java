@@ -8,8 +8,7 @@ import javax.swing.*;
 public class AutomatonGUI {
 
     private JPanel mainFrame;
-    private JToolBar toolbar;
-    private JButton button1;
+    private JButton startButton;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("AutomatonGUI");
@@ -17,5 +16,7 @@ public class AutomatonGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
     }
+
 }

@@ -6,5 +6,4 @@ package com.bearcave.automaty;
 public enum BinaryState implements CellState {
     DEAD,
     ALIVE;
-
 }

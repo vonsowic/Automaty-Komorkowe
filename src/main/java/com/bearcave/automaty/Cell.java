@@ -13,12 +13,12 @@ public class Cell {
 
     public Cell(CellState cellState, int size){
         state = cellState;
+        coords = new Coords1D();
         coords.setHeight(size);
     }
 
     public Cell(CellState cellState, int x, int y){
         state = cellState;
-        coords.setWidth(x);
-        coords.setHeight(y);
+        coords = new Coords2d(x, y);
     }
 }

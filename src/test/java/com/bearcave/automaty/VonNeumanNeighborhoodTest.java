@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
  * Created by miwas on 16.11.16.
  */
 public class VonNeumanNeighborhoodTest {
+
     @Test
     public void cellNeighbors() throws Exception {
 

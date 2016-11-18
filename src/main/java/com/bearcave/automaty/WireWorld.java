@@ -8,7 +8,7 @@ import java.util.Set;
 public class WireWorld extends Automaton2Dim {
 
 
-    protected Automaton newInstance(CellStateFactory cellStateFactory, CellNeighborhood cellNeighborhood) {
+    protected Automaton newInstance() {
         return null;
     }
 
