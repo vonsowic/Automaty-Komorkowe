@@ -57,7 +57,7 @@ public class Controller implements Initializable{
         cellMap = new CellMap( (int) rowSlider.getValue(), (int) columnSlider.getValue());
         cellMap.drawMap( simulationWindow );
 
-        automaton = new GameOfLife();
+        automaton = new GameOfLife((int) rowSlider.getValue(), (int) columnSlider.getValue(), cellMap.translateForAutomaton());
 
     }
 
