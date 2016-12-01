@@ -1,6 +1,7 @@
 package gui;
 
 
+import com.bearcave.automaty.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,14 +9,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.util.Pair;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by miwas on 27.11.16.
@@ -23,21 +25,23 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable{
 
     @FXML private Slider timeLoopSlider;
-    @FXML private Slider widthSlider;
-    @FXML private Slider heightSlider;
+    @FXML private Slider rowSlider;
+    @FXML private Slider columnSlider;
 
 
     @FXML private Button oneMoveButton;
     @FXML private Button startButton;
 
-    @FXML private GridPane simulationWindow;
+    @FXML private Pane simulationWindow;
 
     @FXML final ToggleGroup choosenAutomatonGroup;
     @FXML private RadioButton gameOfLifeRButton;
     @FXML private RadioButton langtonAntRButton;
     @FXML private RadioButton wireWorldRButton;
 
-    private int cellSize;
+    Automaton automaton;
+    private boolean isPlaying = false;
+    CellMap cellMap;
 
     public Controller() {
         choosenAutomatonGroup = new ToggleGroup();
@@ -50,6 +54,11 @@ public class Controller implements Initializable{
         langtonAntRButton.setToggleGroup(choosenAutomatonGroup);
         wireWorldRButton.setToggleGroup(choosenAutomatonGroup);
 
+        cellMap = new CellMap( (int) rowSlider.getValue(), (int) columnSlider.getValue());
+        cellMap.drawMap( simulationWindow );
+
+        automaton = new GameOfLife();
+
     }
 
     //////////////////////////// Uchwyty do kontrolek //////////////////////////////////////////////////////////////////
@@ -58,6 +67,8 @@ public class Controller implements Initializable{
      * @param actionEvent
      */
     public void oneMove(ActionEvent actionEvent) {
+        automaton = automaton.nextState();
+        cellMap.updateCellMap(automaton);
     }
 
     /**
@@ -71,34 +82,109 @@ public class Controller implements Initializable{
 
     public void setWidth(MouseEvent mouseEvent) {
 
-        if ( widthSlider.getValue() > simulationWindow.getColumnConstraints().size()){
-            this.addColumns(simulationWindow, (int) widthSlider.getValue());
-        }
+
 
     }
     ///////////////////////////////// Metody prywatne //////////////////////////////////////////////////////////////////
 
-    private void addRows(GridPane pane, int requestedNumber){
-        int numberOfRows = pane.getRowConstraints().size()+1;
-        for ( int i = pane.getColumnConstraints().size() ; i<=requestedNumber; i++){
-            Circle cell = new Circle(cellSize);
-            cell.setFill(Color.GHOSTWHITE);
-            pane.add(cell, i, numberOfRows);
-
-        }
-    }
-
-    private void addColumns(GridPane pane, int requestedNumber){
-        int numberOfColumns = pane.getColumnConstraints().size()+1;
-        for ( int i = pane.getRowConstraints().size() ; i<=requestedNumber; i++){
-            Circle cell = new Circle(cellSize);
-            cell.setFill(Color.GHOSTWHITE);
-            pane.add(cell, numberOfColumns, i);
-
-        }
-    }
-
     private int getTimeLoop(){
         return (int) timeLoopSlider.getValue();
     }
+
+    private void makeOneMove(){
+        automaton = automaton.nextState();
+    }
+
+    private class CellMap{
+
+        private int cellSize = 14;
+        Map<CellCoordinates, Circle> cellMap;
+        Map<CellState, Color> cellDictionary;
+
+
+        CellMap(int x, int y){
+            createCellDictionary();
+            createMap(x, y);
+            setCellsPositions();
+        }
+
+        private void createCellDictionary() {
+            cellDictionary = new HashMap<>();
+            cellDictionary.put(BinaryState.DEAD, Color.LIGHTGRAY);
+            cellDictionary.put(BinaryState.ALIVE, Color.YELLOW);
+        }
+
+        void createMap(int x, int y){
+            cellMap = new HashMap<>();
+            for (int i=0; i<x; i++){
+                for(int m=0; m<y; m++){
+                    Coords2d coords = new Coords2d(i, m);
+                    Circle circle = new Circle(cellSize/2, getCellColor(BinaryState.DEAD));
+
+                    circle.setOnMouseClicked( event -> {
+                        if ( !isPlaying ){
+                            if ( circle.getFill() == getCellColor(BinaryState.DEAD)) {
+                                circle.setFill(getCellColor(BinaryState.ALIVE));
+                            } else {
+                                circle.setFill(getCellColor(BinaryState.DEAD));
+                            }
+                        }
+                    });
+
+                    cellMap.put(coords, circle);
+                }
+            }
+        }
+
+        void updateCellMap(Automaton automaton){
+            for (Map.Entry<CellCoordinates, Circle> entry : cellMap.entrySet()) {
+                entry.getValue().setFill( getCellColor( automaton.getCellState(entry.getKey())));
+            }
+        }
+
+        void drawMap(Pane pane){
+            for (Map.Entry<CellCoordinates, Circle> entry : cellMap.entrySet()) {
+                pane.getChildren().add(entry.getValue());
+            }
+            pane.requestLayout();
+        }
+
+        Map<CellCoordinates, CellState> translateForAutomaton(){
+            Map<CellCoordinates, CellState> automatonMap = new HashMap<>();
+            for (Map.Entry<CellCoordinates, Circle> entry : cellMap.entrySet()) {
+                automatonMap.put(entry.getKey(), getCellState( getCellColor( entry.getKey())));
+            }
+            return automatonMap;
+        }
+
+        void setCellsPositions(){
+            for (Map.Entry<CellCoordinates, Circle> entry : cellMap.entrySet()) {
+                entry.getValue().setLayoutX((entry.getKey().getWidth()+1)*cellSize);
+                entry.getValue().setLayoutY((entry.getKey().getHeight()+1)*cellSize);
+            }
+        }
+
+        CellState getCellState(Color color){
+            for (Map.Entry<CellState, Color> entry : cellDictionary.entrySet()) {
+                if ( entry.getValue() == color){
+                    return entry.getKey();
+                }
+            }
+            return BinaryState.DEAD;
+        }
+
+        Color getCellColor(CellState state){
+            return cellDictionary.get(state);
+        }
+
+        Color getCellColor(CellCoordinates coords){
+            return (Color) cellMap.get(coords).getFill();
+        }
+
+        Color getCellColor(int x, int y){
+            return getCellColor(new Coords2d(x, y));
+        }
+    }
+
+
 }
