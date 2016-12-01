@@ -18,7 +18,6 @@ public abstract class Automaton {
     protected CellStateFactory stateFactory;
 
 
-
     protected abstract Automaton newInstance();
 
     protected abstract boolean hasNextCoordinates(CellCoordinates cellCoordinates);
@@ -33,7 +32,6 @@ public abstract class Automaton {
 
         Automaton automaton = newInstance();
         CellIterator iterator = cellIterator();
-
 
         while (iterator.hasNext()){
             automaton.cells.put( nextCoordinates(iterator.next().coords),
@@ -55,7 +53,7 @@ public abstract class Automaton {
         return iterator;
     }
 
-    protected CellState getCellState(CellCoordinates coords){
+    public CellState getCellState(CellCoordinates coords){
         return cells.get(coords);
     }
 

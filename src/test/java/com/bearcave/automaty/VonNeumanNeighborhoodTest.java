@@ -22,17 +22,17 @@ public class VonNeumanNeighborhoodTest {
         VonNeumanNeighborhood vonNeumanNeighborhood = new VonNeumanNeighborhood();
         Set set = vonNeumanNeighborhood.cellNeighbors(new Coords2d(width, height));
 
-        Iterator<CellCoordinates> iterator = set.iterator();
+        Assert.assertTrue(set.contains(new Coords2d(3, 4)));
+        Assert.assertTrue(set.contains(new Coords2d(3, 5)));
+        Assert.assertTrue(set.contains(new Coords2d(3, 6)));
+        Assert.assertTrue(set.contains(new Coords2d(4, 4)));
+        Assert.assertTrue(set.contains(new Coords2d(4, 6)));
+        Assert.assertTrue(set.contains(new Coords2d(5, 4)));
+        Assert.assertTrue(set.contains(new Coords2d(5, 5)));
+        Assert.assertTrue(set.contains(new Coords2d(5, 6)));
 
-        for ( int i=-1; i<2; i++){
-            for (int j=-1; j<2 && iterator.hasNext(); j++){
-                if (i!=0 || j!=0){
-                    CellCoordinates cellCoordinates = iterator.next();
-                    Assert.assertEquals(width + i, cellCoordinates.getWidth());
-                    Assert.assertEquals(height + j, cellCoordinates.getHeight());
-                }
-            }
-        }
+
+
     }
 
 }
