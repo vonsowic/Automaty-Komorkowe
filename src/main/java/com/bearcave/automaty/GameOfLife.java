@@ -18,9 +18,9 @@ public class GameOfLife extends Automaton2Dim {
 
         Map<CellCoordinates, CellState> map = new HashMap();
         if (initialMap == null){
-           // this.stateFactory = new UniformStateFactory(BinaryState.DEAD);
+            this.stateFactory = new UniformStateFactory(BinaryState.DEAD);
         } else {
-           // this.stateFactory = new GeneralStateFactory(initialMap, BinaryState.DEAD);
+            this.stateFactory = new GeneralStateFactory(initialMap, BinaryState.DEAD);
         }
 
         for(int i = 0; i<x; i++) {

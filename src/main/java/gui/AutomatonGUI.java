@@ -26,7 +26,7 @@ public class AutomatonGUI extends Application  {
     public void start(Stage primaryStage) throws Exception{
 
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Automaty");
         primaryStage.setScene(new Scene(root, 590, 559));
         primaryStage.show();
     }
