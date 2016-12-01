@@ -3,6 +3,7 @@ package com.bearcave.automaty;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Główna klasa
@@ -13,73 +14,81 @@ import java.util.Set;
 public abstract class Automaton {
 
     private Map<CellCoordinates, CellState> cells;
-    private CellNeighborhood neighborsStrategy;
-    private CellStateFactory stateFactory;
+    protected CellNeighborhood neighborsStrategy;
+    protected CellStateFactory stateFactory;
 
 
-    protected abstract Automaton newInstance( CellStateFactory cellStateFactory, CellNeighborhood cellNeighborhood);
+
+    protected abstract Automaton newInstance();
 
     protected abstract boolean hasNextCoordinates(CellCoordinates cellCoordinates);
 
-    protected abstract CellCoordinates initialCoordiantes(CellCoordinates cellCoordinates);
+    protected abstract CellCoordinates initialCoordinates(CellCoordinates cellCoordinates);
 
     protected abstract CellCoordinates nextCoordinates(CellCoordinates cellCoordinates);
 
     protected abstract CellState nextCellState(CellState currentState, Set<Cell> neighborsStates);
 
     public Automaton nextState(){
-        return null;
+
+        Automaton automaton = newInstance();
+        CellIterator iterator = cellIterator();
+
+
+        while (iterator.hasNext()){
+            automaton.cells.put( nextCoordinates(iterator.next().coords),
+                    nextCellState(cells.get(iterator.currentCoords),
+                            mapCoordinates(neighborsStrategy.cellNeighbors(iterator.currentCoords))
+                            ));
+        }
+
+        return automaton;
     }
 
-    public void insertStructure(Map<? extends CellCoordinates, ? extends CellState> map){
-
+    //ZMIANA W STASUNKU DO DIAGRAMU Map<? extends CellCoordinates, ? extends CellState> map
+    public void insertStructure(Map<CellCoordinates, CellState> map){
+        cells =  map;
     }
 
-    private Set<Cell> mapCoordinates(Set<CellCoordinates> setOfCellCoordiantes){
-        return null;
+    public CellIterator cellIterator(){
+        CellIterator iterator = new CellIterator();
+        return iterator;
     }
 
-    protected class CellIterator implements Iterator<Cell>{
-        private CellCoordinates currentState;
+    protected CellState getCellState(CellCoordinates coords){
+        return cells.get(coords);
+    }
 
-        /**
-         * Returns {@code true} if the iteration has more elements.
-         * (In other words, returns {@code true} if {@link #next} would
-         * return an element rather than throwing an exception.)
-         *
-         * @return {@code true} if the iteration has more elements
-         */
-        public boolean hasNext() {
-            return false;
+    private Set<Cell> mapCoordinates(Set<CellCoordinates> setOfCellCoordinates){
+
+        Set<Cell> set = new TreeSet<Cell>();
+        Iterator<CellCoordinates> iterator = setOfCellCoordinates.iterator();
+        while (iterator.hasNext()){
+            Cell cell = new Cell();
+            cell.coords = iterator.next();
+            cell.state = cells.get(cell.coords);
+            set.add(cell);
+        }
+        return set;
+    }
+
+    protected class CellIterator{
+        protected CellCoordinates currentCoords;
+
+        public boolean hasNext(){
+            return hasNextCoordinates(currentCoords);
         }
 
         /**
-         * Returns the next element in the iteration.
-         *
-         * @return the next element in the iteration
-         * @throws NoSuchElementException if the iteration has no more elements
+         * currentState ustawia sie na nastepnej pozycji i zwracana jest nowa komorka o nowo ustawionej pozycji
+         * @return nowy Cell
          */
-        public Cell next() {
+        public Cell next(){
             return null;
         }
 
-        /**
-         * Removes from the underlying collection the last element returned
-         * by this iterator (optional operation).  This method can be called
-         * only once per call to {@link #next}.  The behavior of an iterator
-         * is unspecified if the underlying collection is modified while the
-         * iteration is in progress in any way other than by calling this
-         * method.
-         *
-         * @throws UnsupportedOperationException if the {@code remove}
-         *                                       operation is not supported by this iterator
-         * @throws IllegalStateException         if the {@code next} method has not
-         *                                       yet been called, or the {@code remove} method has already
-         *                                       been called after the last call to the {@code next}
-         *                                       method
-         * @implSpec The default implementation throws an instance of
-         * {@link UnsupportedOperationException} and performs no other action.
-         */
-
+        public void setState(CellState cellState){
+            cells.put(currentCoords, cellState);
+        }
     }
 }

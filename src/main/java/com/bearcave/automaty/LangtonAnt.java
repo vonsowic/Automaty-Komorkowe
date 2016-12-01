@@ -6,7 +6,8 @@ import java.util.Set;
  * Created by miwas on 05.11.16.
  */
 public class LangtonAnt extends Automaton2Dim {
-    protected Automaton newInstance(CellStateFactory cellStateFactory, CellNeighborhood cellNeighborhood) {
+
+    protected Automaton newInstance() {
         return null;
     }
 
