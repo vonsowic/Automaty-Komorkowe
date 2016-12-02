@@ -16,7 +16,6 @@ public class VonNeumanNeighborhood implements CellNeighborhood {
 
         for ( int i=-1; i<2; i++){
             for (int j=-1; j<2; j++){
-
                 //warunek uniemozliwia dodanie wlasnych wpolrzednych
                 if (i!=0 || j!=0){
                     int x = cell.getWidth()+i;

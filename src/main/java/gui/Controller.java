@@ -10,11 +10,9 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.util.Pair;
 
 import java.net.URL;
 import java.util.*;
@@ -67,8 +65,7 @@ public class Controller implements Initializable{
      * @param actionEvent
      */
     public void oneMove(ActionEvent actionEvent) {
-        automaton = automaton.nextState();
-        cellMap.updateCellMap(automaton);
+        makeOneMove();
     }
 
     /**
@@ -93,6 +90,7 @@ public class Controller implements Initializable{
 
     private void makeOneMove(){
         automaton = automaton.nextState();
+        cellMap.updateCellMap(automaton.getCellMap());
     }
 
     private class CellMap{
@@ -112,6 +110,7 @@ public class Controller implements Initializable{
             cellDictionary = new HashMap<>();
             cellDictionary.put(BinaryState.DEAD, Color.LIGHTGRAY);
             cellDictionary.put(BinaryState.ALIVE, Color.YELLOW);
+            cellDictionary.put(null, Color.RED);
         }
 
         void createMap(int x, int y){
@@ -139,6 +138,14 @@ public class Controller implements Initializable{
         void updateCellMap(Automaton automaton){
             for (Map.Entry<CellCoordinates, Circle> entry : cellMap.entrySet()) {
                 entry.getValue().setFill( getCellColor( automaton.getCellState(entry.getKey())));
+            }
+        }
+
+        void updateCellMap(Map<CellCoordinates, CellState> automatonMap){
+
+            for (Map.Entry<CellCoordinates, Circle> entry : cellMap.entrySet()) {
+                // do wejsciowej wartosci zawierajaca kolo kolor jest ustawiany zgodnie ze stanem automatonMap o tej samej pozycji co kolo
+                entry.getValue().setFill( getCellColor( automatonMap.get(entry.getKey())));
             }
         }
 

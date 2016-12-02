@@ -15,7 +15,7 @@ public class LangtonAnt extends Automaton2Dim {
         return null;
     }
 
-    protected CellState nextCellState(CellState currentState, Set<Cell> neighborsStates) {
+    protected CellState nextCellState(CellState currentState, Set<CellCoordinates> neighborsStates) {
         return null;
     }
 }

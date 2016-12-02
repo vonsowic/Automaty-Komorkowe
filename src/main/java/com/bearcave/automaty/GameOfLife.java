@@ -15,7 +15,6 @@ public class GameOfLife extends Automaton2Dim {
         this.neighborsStrategy = new VonNeumanNeighborhood();
         this.setSize(x, y);
 
-
         Map<CellCoordinates, CellState> map = new HashMap();
         if (initialMap == null){
             this.stateFactory = new UniformStateFactory(BinaryState.DEAD);
@@ -44,15 +43,14 @@ public class GameOfLife extends Automaton2Dim {
      * @param neighborsStates
      * @return stan komorki zgodny z zasadami gry
      */
-    protected CellState nextCellState(CellState currentState, Set<Cell> neighborsStates) {
+    protected CellState nextCellState(CellState currentState, Set<CellCoordinates> neighborsStates) {
 
-        Iterator<Cell> iterator = neighborsStates.iterator();
+        Iterator<CellCoordinates> iterator = neighborsStates.iterator();
         // licze zywych sasiadow
         int living_neighbors = 0;
         while (iterator.hasNext()){
-            Cell cell = iterator.next();
 
-            if ( cell.state == BinaryState.ALIVE){
+            if ( getCellMap().get(iterator.next()) == BinaryState.ALIVE){
                 living_neighbors++;
             }
         }
