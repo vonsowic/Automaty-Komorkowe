@@ -31,11 +31,14 @@ public abstract class Automaton {
     public Automaton nextState(){
 
         Automaton automaton = newInstance();
+        iterate(automaton);
+        return automaton;
+    }
+
+    public void iterate(Automaton automaton){
         for ( Map.Entry<CellCoordinates, CellState> entry : cells.entrySet()){
             automaton.cells.put( entry.getKey(), nextCellState(entry.getValue(), neighborsStrategy.cellNeighbors( entry.getKey())));
         }
-
-        return automaton;
     }
 
     //ZMIANA W STASUNKU DO DIAGRAMU Map<? extends CellCoordinates, ? extends CellState> map

@@ -10,9 +10,22 @@ import java.util.Set;
  */
 public class GameOfLife extends Automaton2Dim {
 
+    public GameOfLife(int x,
+                      int y,
+                      CellStateFactory factory){
+
+        this.neighborsStrategy = new MoorNeighborhood();
+        this.stateFactory = factory;
+        this.setSize(x, y);
+
+        Map<CellCoordinates, CellState> map = new HashMap();
+        insertStructure(map);
+    }
+
 
     public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap){
-        this.neighborsStrategy = new VonNeumanNeighborhood();
+
+        this.neighborsStrategy = new MoorNeighborhood();
         this.setSize(x, y);
 
         Map<CellCoordinates, CellState> map = new HashMap();
@@ -33,7 +46,7 @@ public class GameOfLife extends Automaton2Dim {
     }
 
     protected Automaton newInstance() {
-        Automaton automaton = new GameOfLife(this.getWidth(), this.getHeight(), null);
+        Automaton automaton = new GameOfLife(this.getWidth(), this.getHeight(), stateFactory);
         return automaton;
     }
 
@@ -49,7 +62,6 @@ public class GameOfLife extends Automaton2Dim {
         // licze zywych sasiadow
         int living_neighbors = 0;
         while (iterator.hasNext()){
-
             if ( getCellMap().get(iterator.next()) == BinaryState.ALIVE){
                 living_neighbors++;
             }
