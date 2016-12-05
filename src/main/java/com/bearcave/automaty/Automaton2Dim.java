@@ -21,8 +21,8 @@ public abstract class Automaton2Dim extends Automaton {
         this.height = height;
     }
 
-    protected CellCoordinates initialCoordinates(CellCoordinates cellCoordinates) {
-        return null;
+    protected CellCoordinates initialCoordinates() {
+        return new Coords2d(0, 0);
     }
 
     /**

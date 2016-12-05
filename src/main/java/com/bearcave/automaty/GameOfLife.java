@@ -10,17 +10,29 @@ import java.util.Set;
  */
 public class GameOfLife extends Automaton2Dim {
 
+    public GameOfLife(int x,
+                      int y,
+                      CellStateFactory factory){
 
-    public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap){
-        this.neighborsStrategy = new VonNeumanNeighborhood();
+        this.neighborsStrategy = new MoorNeighborhood();
+        this.stateFactory = factory;
         this.setSize(x, y);
 
+        Map<CellCoordinates, CellState> map = new HashMap();
+        insertStructure(map);
+    }
+
+
+    public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap){
+
+        this.neighborsStrategy = new MoorNeighborhood();
+        this.setSize(x, y);
 
         Map<CellCoordinates, CellState> map = new HashMap();
         if (initialMap == null){
-           // this.stateFactory = new UniformStateFactory(BinaryState.DEAD);
+            this.stateFactory = new UniformStateFactory(BinaryState.DEAD);
         } else {
-           // this.stateFactory = new GeneralStateFactory(initialMap, BinaryState.DEAD);
+            this.stateFactory = new GeneralStateFactory(initialMap, BinaryState.DEAD);
         }
 
         for(int i = 0; i<x; i++) {
@@ -34,7 +46,7 @@ public class GameOfLife extends Automaton2Dim {
     }
 
     protected Automaton newInstance() {
-        Automaton automaton = new GameOfLife(this.getWidth(), this.getHeight(), null);
+        Automaton automaton = new GameOfLife(this.getWidth(), this.getHeight(), stateFactory);
         return automaton;
     }
 
@@ -44,15 +56,13 @@ public class GameOfLife extends Automaton2Dim {
      * @param neighborsStates
      * @return stan komorki zgodny z zasadami gry
      */
-    protected CellState nextCellState(CellState currentState, Set<Cell> neighborsStates) {
+    protected CellState nextCellState(CellState currentState, Set<CellCoordinates> neighborsStates) {
 
-        Iterator<Cell> iterator = neighborsStates.iterator();
+        Iterator<CellCoordinates> iterator = neighborsStates.iterator();
         // licze zywych sasiadow
         int living_neighbors = 0;
         while (iterator.hasNext()){
-            Cell cell = iterator.next();
-
-            if ( cell.state == BinaryState.ALIVE){
+            if ( getCellMap().get(iterator.next()) == BinaryState.ALIVE){
                 living_neighbors++;
             }
         }

@@ -22,25 +22,23 @@ public abstract class Automaton {
 
     protected abstract boolean hasNextCoordinates(CellCoordinates cellCoordinates);
 
-    protected abstract CellCoordinates initialCoordinates(CellCoordinates cellCoordinates);
+    protected abstract CellCoordinates initialCoordinates();
 
     protected abstract CellCoordinates nextCoordinates(CellCoordinates cellCoordinates);
 
-    protected abstract CellState nextCellState(CellState currentState, Set<Cell> neighborsStates);
+    protected abstract CellState nextCellState(CellState currentState, Set<CellCoordinates> neighborsStates);
 
     public Automaton nextState(){
 
         Automaton automaton = newInstance();
-        CellIterator iterator = cellIterator();
-
-        while (iterator.hasNext()){
-            automaton.cells.put( nextCoordinates(iterator.next().coords),
-                    nextCellState(cells.get(iterator.currentCoords),
-                            mapCoordinates(neighborsStrategy.cellNeighbors(iterator.currentCoords))
-                            ));
-        }
-
+        iterate(automaton);
         return automaton;
+    }
+
+    public void iterate(Automaton automaton){
+        for ( Map.Entry<CellCoordinates, CellState> entry : cells.entrySet()){
+            automaton.cells.put( entry.getKey(), nextCellState(entry.getValue(), neighborsStrategy.cellNeighbors( entry.getKey())));
+        }
     }
 
     //ZMIANA W STASUNKU DO DIAGRAMU Map<? extends CellCoordinates, ? extends CellState> map
@@ -48,45 +46,13 @@ public abstract class Automaton {
         cells =  map;
     }
 
-    public CellIterator cellIterator(){
-        CellIterator iterator = new CellIterator();
-        return iterator;
-    }
 
     public CellState getCellState(CellCoordinates coords){
         return cells.get(coords);
     }
 
-    private Set<Cell> mapCoordinates(Set<CellCoordinates> setOfCellCoordinates){
-
-        Set<Cell> set = new TreeSet<Cell>();
-        Iterator<CellCoordinates> iterator = setOfCellCoordinates.iterator();
-        while (iterator.hasNext()){
-            Cell cell = new Cell();
-            cell.coords = iterator.next();
-            cell.state = cells.get(cell.coords);
-            set.add(cell);
-        }
-        return set;
+    public Map<CellCoordinates, CellState> getCellMap(){
+        return cells;
     }
 
-    protected class CellIterator{
-        protected CellCoordinates currentCoords;
-
-        public boolean hasNext(){
-            return hasNextCoordinates(currentCoords);
-        }
-
-        /**
-         * currentState ustawia sie na nastepnej pozycji i zwracana jest nowa komorka o nowo ustawionej pozycji
-         * @return nowy Cell
-         */
-        public Cell next(){
-            return null;
-        }
-
-        public void setState(CellState cellState){
-            cells.put(currentCoords, cellState);
-        }
-    }
 }

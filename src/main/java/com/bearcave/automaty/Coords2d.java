@@ -1,13 +1,11 @@
 package com.bearcave.automaty;
 
-import java.util.Comparator;
-
 /**
  * Created by miwas on 05.11.16.
  */
-public class Coords2d implements CellCoordinates, Comparable<Coords2d> {
-    public int x;
-    public int y;
+public class Coords2d implements CellCoordinates {
+    private Integer x;
+    private Integer y;
 
     public Coords2d(int width, int height){
         setWidth(width);
@@ -30,23 +28,22 @@ public class Coords2d implements CellCoordinates, Comparable<Coords2d> {
         y = height;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coords2d)) return false;
+
+        Coords2d coords2d = (Coords2d) o;
+
+        if (!x.equals(coords2d.x)) return false;
+        return y.equals(coords2d.y);
+
+    }
 
     @Override
-    public int compareTo(Coords2d o2) {
-        if (this.getWidth() == o2.getWidth()){
-            if (this.getHeight() < o2.getHeight()){
-                return -1;
-            } else if ( this.getHeight() == o2.getHeight() ){
-                return 0;
-            } else {
-                return 1;
-            }
-        }
-
-        if (this.getWidth() < o2.getWidth()){
-            return -1;
-        } else {
-            return 1;
-        }
+    public int hashCode() {
+        int result = x.hashCode();
+        result = 31 * result + y.hashCode();
+        return result;
     }
 }
