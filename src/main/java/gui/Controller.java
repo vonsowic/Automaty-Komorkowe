@@ -2,13 +2,14 @@ package gui;
 
 
 import com.bearcave.automaty.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -30,6 +31,8 @@ public class Controller implements Initializable{
 
     @FXML private Button oneMoveButton;
     @FXML private Button startButton;
+    @FXML private Button resetButton;
+
 
     @FXML private Pane simulationWindow;
 
@@ -41,7 +44,7 @@ public class Controller implements Initializable{
     private final static int GAMEOFLIFE = 1;
     private final static int LANGTONANT= 2;
     private final static int WIREWORLD = 3;
-    private String choosenGame = null;
+    private int choosenGame = 0;
 
 
     Automaton automaton = null;
@@ -79,35 +82,33 @@ public class Controller implements Initializable{
      * @param actionEvent
      */
     public void startSimulation(ActionEvent actionEvent) {
-        if ( !isPlaying){
-            isPlaying = !isPlaying;
+        isPlaying = !isPlaying;
+        if ( isPlaying){
             setDisable(true);
             startButton.setText("Stop");
+            startSimulation();
 
-            makeOneMove();
-            /*
-            while (isPlaying){
-                new Thread(() -> {
-                    makeOneMove();
-                    try {
-                        Thread.sleep( getTimeLoop());
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                ).start();
-            }
-            */
         } else {
-            isPlaying = !isPlaying;
             startButton.setText("Start");
-
+            resetButton.setDisable(false);
+            oneMoveButton.setDisable(false);
         }
     }
 
 
 
     ///////////////////////////////// Metody prywatne //////////////////////////////////////////////////////////////////
+
+    private int getSelectedGame(){
+        Toggle selectedTogle = choosenAutomatonGroup.getSelectedToggle();
+        if ( selectedTogle == gameOfLifeRButton){
+            return GAMEOFLIFE;
+        } else if ( selectedTogle == wireWorldRButton){
+            return WIREWORLD;
+        }
+
+        return 0;
+    }
 
     private int getTimeLoop(){
         return (int) timeLoopSlider.getValue();
@@ -122,12 +123,13 @@ public class Controller implements Initializable{
     }
 
     private void chooseGame(){
-        if (choosenAutomatonGroup.getSelectedToggle() == gameOfLifeRButton){
-            automaton = new GameOfLife(getCellsWidth(), getCellsHeigth(), cellMap.translateForAutomaton());
-        } else if (choosenAutomatonGroup.getSelectedToggle() == langtonAntRButton) {
-
-        } else if (choosenAutomatonGroup.getSelectedToggle() == wireWorldRButton) {
-            automaton = new WireWorld(getCellsWidth(), getCellsHeigth(), cellMap.translateForAutomaton());
+        switch ( getSelectedGame() ){
+            case GAMEOFLIFE:
+                automaton = new GameOfLife(getCellsWidth(), getCellsHeigth(), cellMap.translateForAutomaton());
+            break;
+            case WIREWORLD:
+                automaton = new WireWorld(getCellsWidth(), getCellsHeigth(), cellMap.translateForAutomaton());
+            break;
         }
     }
 
@@ -137,6 +139,8 @@ public class Controller implements Initializable{
         gameOfLifeRButton.setDisable(isLock);
         langtonAntRButton.setDisable(isLock);
         wireWorldRButton.setDisable(isLock);
+        oneMoveButton.setDisable(isLock);
+        resetButton.setDisable(isLock);
 
         for ( Map.Entry<CellCoordinates, Shape> entry : cellMap.cellMap.entrySet()){
             entry.getValue().setDisable(isLock);
@@ -149,6 +153,33 @@ public class Controller implements Initializable{
 
         automaton = automaton.nextState();
         cellMap.updateCellMap(automaton.getCellMap());
+    }
+
+    private void startInBackgroundThread(){
+        // Update the Label on the JavaFx Application Thread
+        while (isPlaying) {
+            Platform.runLater(() -> makeOneMove());
+
+            try {
+                Thread.sleep(getTimeLoop());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void startSimulation(){
+
+        // Create a Runnable
+        Runnable task = () -> startInBackgroundThread();
+
+        // Run the task in a background thread
+        Thread backgroundThread = new Thread(task);
+        // Terminate the running thread if the application exits
+        backgroundThread.setDaemon(true);
+        // Start the thread
+        backgroundThread.start();
+
     }
 
     public void reset(ActionEvent actionEvent) {
@@ -227,6 +258,19 @@ public class Controller implements Initializable{
             }
         }
 
+        private QuadState translateCellFromAutomaton(WireElectronState state){
+            switch (state){
+                case WIRE:
+                    return QuadState.YELLOW;
+                case ELECTRON_HEAD:
+                    return QuadState.RED;
+                case ELECTRON_TAIL:
+                    return QuadState.GREEN;
+                default:
+                    return QuadState.DEAD;
+            }
+        }
+
         void createMap(int x, int y){
             cellMap = new HashMap<>();
             for (int i=0; i<x; i++){
@@ -234,9 +278,14 @@ public class Controller implements Initializable{
                     Coords2d coords = new Coords2d(i, m);
                     Rectangle cell = new Rectangle( cellSize, cellSize, getCellColor(QuadState.DEAD));
 
-                    cell.setOnMouseClicked( event -> {
-                        clickOnCell(cell);
+                    // if ctrl is clicked, then draw on pane
+                    cell.setOnMouseExited(t -> {
+                        if(t.isControlDown())
+                            clickOnCell(cell);
                     });
+
+                    cell.setOnMouseClicked( event -> clickOnCell(cell));
+
 
                     cellMap.put(coords, cell);
                 }
@@ -246,12 +295,16 @@ public class Controller implements Initializable{
         void updateCellMap(Map<CellCoordinates, CellState> automatonMap){
             CellState state = null;
             for (Map.Entry<CellCoordinates, Shape> entry : cellMap.entrySet()) {
-                if ( choosenAutomatonGroup.getSelectedToggle() == gameOfLifeRButton){
-                    state = translateCellFromAutomaton((BinaryState) automatonMap.get(entry.getKey()));
-                } else if (choosenAutomatonGroup.getSelectedToggle() == wireWorldRButton){
-                    // do wejsciowej wartosci zawierajaca kolo kolor jest ustawiany zgodnie ze stanem automatonMap o tej samej pozycji co kolo
-                    entry.getValue().setFill( getCellColor( state ));
+                switch ( getSelectedGame() ){
+                    case GAMEOFLIFE:
+                        state = translateCellFromAutomaton((BinaryState) automatonMap.get(entry.getKey()));
+                        break;
+                    case WIREWORLD:
+                        state = translateCellFromAutomaton((WireElectronState) automatonMap.get(entry.getKey()));
+                        break;
                 }
+                // do wejsciowej wartosci zawierajaca kolo kolor jest ustawiany zgodnie ze stanem automatonMap o tej samej pozycji co kolo
+                entry.getValue().setFill( getCellColor( state ));
 
             }
         }
@@ -290,16 +343,18 @@ public class Controller implements Initializable{
         }
 
         public void clickOnCell(Shape cell){
-            if ( choosenAutomatonGroup.getSelectedToggle() == gameOfLifeRButton){
-                if ( !isPlaying ){
+            if ( isPlaying ) return;
+
+            switch ( getSelectedGame()){
+                case GAMEOFLIFE:
                     if ( cell.getFill() == getCellColor(QuadState.DEAD)) {
                         cell.setFill(getCellColor(QuadState.YELLOW));
                     } else {
                         cell.setFill(getCellColor(QuadState.DEAD));
                     }
-                }
-            } else if ( choosenAutomatonGroup.getSelectedToggle() == wireWorldRButton){
-                if ( !isPlaying ){
+                    break;
+
+                case WIREWORLD:
                     switch ((QuadState) getCellState( (Color) cell.getFill() )){
                         case DEAD:
                             cell.setFill(getCellColor(QuadState.YELLOW));
@@ -314,10 +369,9 @@ public class Controller implements Initializable{
                             cell.setFill(getCellColor(QuadState.DEAD));
                             break;
                     }
-                }
+                    break;
             }
         }
     }
-
 
 }

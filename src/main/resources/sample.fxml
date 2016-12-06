@@ -27,7 +27,7 @@
 
                         <Separator prefHeight="13.0" prefWidth="136.0" />
                         <Label prefHeight="20.0" prefWidth="136.0" styleClass="control-label" text="Czas jednej pętli" />
-                        <Slider fx:id="timeLoopSlider" max="10000.0" value="2000.0" />
+                        <Slider fx:id="timeLoopSlider" min="100" max="3000" value="500" />
                         <Label styleClass="control-label" text="Szerokość" />
                         <Slider fx:id="columnSlider" min="1.0" value="33.0" />
                         <Label styleClass="control-label" text="Wysokość" />
