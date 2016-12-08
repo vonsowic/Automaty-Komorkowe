@@ -22,6 +22,10 @@ public class GameOfLife extends Automaton2Dim {
         insertStructure(map);
     }
 
+    public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap, int levelOfNeighborhood){
+        this(x, y, initialMap);
+        this.neighborsStrategy = new MoorNeighborhood(levelOfNeighborhood);
+    }
 
     public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap){
 

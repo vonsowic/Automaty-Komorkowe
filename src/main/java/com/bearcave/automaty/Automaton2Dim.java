@@ -9,11 +9,7 @@ public abstract class Automaton2Dim extends Automaton {
     private int height = 0;
 
     protected boolean hasNextCoordinates(CellCoordinates coords) {
-        if ( coords.getWidth()<width && coords.getHeight()<height){
-            return true;
-        } else {
-            return false;
-        }
+        return ( coords.getX()<width-1 || coords.getY()<height-1);
     }
 
     public void setSize(int width, int height){
@@ -31,15 +27,12 @@ public abstract class Automaton2Dim extends Automaton {
      * @return pozycja nastepnej komorki
      */
     protected CellCoordinates nextCoordinates(CellCoordinates cellCoordinates) {
-        if ( this.hasNextCoordinates(cellCoordinates)){
-            if ( cellCoordinates.getHeight() < this.height){
-                return new Coords2d( cellCoordinates.getWidth()+1, cellCoordinates.getHeight());
-            } else if (cellCoordinates.getWidth() < this.width) {
-                return new Coords2d( 0, cellCoordinates.getHeight()+1);
-            } else return null;
-        } else {
-            return null;
-        }
+        if ( cellCoordinates.getY() < this.height-1){
+            return new Coords2d(cellCoordinates.getX(), cellCoordinates.getY()+1);
+        } else if ( cellCoordinates.getX() < this.width-1 ) {
+            return new Coords2d(cellCoordinates.getX()+1, 0);
+        } else return null;
+
     }
 
     public int getWidth() {

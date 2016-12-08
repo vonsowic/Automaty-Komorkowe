@@ -31,7 +31,17 @@ public abstract class Automaton {
     public Automaton nextState(){
 
         Automaton automaton = newInstance();
-        iterate(automaton);
+        CellCoordinates coord = initialCoordinates();
+        boolean endLoop = false;
+        while ( !endLoop){
+            automaton.cells.put( coord, nextCellState(cells.get(coord), neighborsStrategy.cellNeighbors( coord)));
+
+            if ( hasNextCoordinates(coord))
+                coord = nextCoordinates(coord);
+            else
+                endLoop = true;
+        }
+
         return automaton;
     }
 

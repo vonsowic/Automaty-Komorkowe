@@ -27,7 +27,7 @@ public class AutomatonGUI extends Application  {
 
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("sample.fxml"));
         primaryStage.setTitle("Automaty");
-        primaryStage.setScene(new Scene(root, 590, 559));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

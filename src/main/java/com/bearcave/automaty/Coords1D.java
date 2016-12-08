@@ -10,20 +10,20 @@ public class Coords1D implements CellCoordinates, Comparable<Coords1D> {
         this.size = size;
     }
 
-    public int getWidth() {
+    public int getX() {
         return size;
     }
 
-    public int getHeight() {
-        return this.getWidth();
+    public int getY() {
+        return this.getX();
     }
 
-    public void setHeight(int height) {
+    public void setY(int height) {
         size = height;
     }
 
-    public void setWidth(int width) {
-        this.setHeight(width);
+    public void setX(int width) {
+        this.setX(width);
     }
 
     @Override
