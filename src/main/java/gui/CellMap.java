@@ -22,6 +22,7 @@ public class CellMap{
 
     public CellMap(Controller context){
         this.context = context;
+        simulationWindow = context.getSimulationWindow();
         createCellDictionary();
         createMap(context.getCellsWidth(), context.getCellsHeigth());
         setCellsPositions();

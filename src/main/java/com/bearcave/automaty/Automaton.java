@@ -1,9 +1,8 @@
 package com.bearcave.automaty;
 
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Główna klasa
@@ -16,7 +15,6 @@ public abstract class Automaton {
     private Map<CellCoordinates, CellState> cells;
     protected CellNeighborhood neighborsStrategy;
     protected CellStateFactory stateFactory;
-
 
     protected abstract Automaton newInstance();
 
@@ -34,7 +32,11 @@ public abstract class Automaton {
         CellCoordinates coord = initialCoordinates();
         boolean endLoop = false;
         while ( !endLoop){
-            automaton.cells.put( coord, nextCellState(cells.get(coord), neighborsStrategy.cellNeighbors( coord)));
+            automaton.cells.put(
+                    coord,
+                    nextCellState(
+                            cells.get(coord),
+                            neighborsStrategy.cellNeighbors(coord)));
 
             if ( hasNextCoordinates(coord))
                 coord = nextCoordinates(coord);
@@ -45,17 +47,10 @@ public abstract class Automaton {
         return automaton;
     }
 
-    public void iterate(Automaton automaton){
-        for ( Map.Entry<CellCoordinates, CellState> entry : cells.entrySet()){
-            automaton.cells.put( entry.getKey(), nextCellState(entry.getValue(), neighborsStrategy.cellNeighbors( entry.getKey())));
-        }
-    }
-
-    //ZMIANA W STASUNKU DO DIAGRAMU Map<? extends CellCoordinates, ? extends CellState> map
     public void insertStructure(Map<CellCoordinates, CellState> map){
-        cells =  map;
+        cells = new HashMap<>();
+        cells.putAll(map);
     }
-
 
     public CellState getCellState(CellCoordinates coords){
         return cells.get(coords);
@@ -64,5 +59,4 @@ public abstract class Automaton {
     public Map<CellCoordinates, CellState> getCellMap(){
         return cells;
     }
-
 }

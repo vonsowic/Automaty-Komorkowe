@@ -18,7 +18,10 @@ public class MoorNeighborhood implements CellNeighborhood {
     }
 
     public MoorNeighborhood(int n){
-        this.n = n;
+        if(n>0)
+            this.n = n;
+        else
+            this.n = 1;
     }
 
 

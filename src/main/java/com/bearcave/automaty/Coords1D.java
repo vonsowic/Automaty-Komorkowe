@@ -3,7 +3,7 @@ package com.bearcave.automaty;
 /**
  * Created by miwas on 05.11.16.
  */
-public class Coords1D implements CellCoordinates, Comparable<Coords1D> {
+public class Coords1D implements CellCoordinates{
     public int size;
 
     public Coords1D(int size){
@@ -15,7 +15,7 @@ public class Coords1D implements CellCoordinates, Comparable<Coords1D> {
     }
 
     public int getY() {
-        return this.getX();
+        return 0;
     }
 
     public void setY(int height) {
@@ -26,8 +26,4 @@ public class Coords1D implements CellCoordinates, Comparable<Coords1D> {
         this.setX(width);
     }
 
-    @Override
-    public int compareTo(Coords1D o) {
-        return size-o.size;
-    }
 }

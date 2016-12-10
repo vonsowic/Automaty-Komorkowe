@@ -147,6 +147,10 @@ public class Controller implements Initializable{
         return (int) columnSlider.getValue();
     }
 
+    public Pane getSimulationWindow() {
+        return simulationWindow;
+    }
+
     public boolean isPlaying(){
         return isPlaying;
     }

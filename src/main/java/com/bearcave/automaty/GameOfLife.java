@@ -12,14 +12,14 @@ public class GameOfLife extends Automaton2Dim {
 
     public GameOfLife(int x,
                       int y,
-                      CellStateFactory factory){
+                      Map<CellCoordinates,CellState> previousMap,
+                      CellStateFactory factory,
+                      CellNeighborhood strategy){
 
-        this.neighborsStrategy = new MoorNeighborhood();
+        this.neighborsStrategy = strategy;
         this.stateFactory = factory;
         this.setSize(x, y);
-
-        Map<CellCoordinates, CellState> map = new HashMap();
-        insertStructure(map);
+        insertStructure(previousMap);
     }
 
     public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap, int levelOfNeighborhood){
@@ -50,7 +50,13 @@ public class GameOfLife extends Automaton2Dim {
     }
 
     protected Automaton newInstance() {
-        Automaton automaton = new GameOfLife(this.getWidth(), this.getHeight(), stateFactory);
+        Automaton automaton = new GameOfLife(
+                this.getWidth(),
+                this.getHeight(),
+                this.getCellMap(),
+                stateFactory,
+                neighborsStrategy);
+
         return automaton;
     }
 

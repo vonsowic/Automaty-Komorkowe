@@ -19,7 +19,10 @@ public class VonNeumanNeighborhood implements CellNeighborhood {
     }
 
     public VonNeumanNeighborhood(int n){
-        this.n = n;
+        if(n>0)
+            this.n = n;
+        else
+            this.n = 1;
     }
 
     /*
