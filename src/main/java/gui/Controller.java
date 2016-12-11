@@ -142,6 +142,10 @@ public class Controller implements Initializable{
             return GAMEOFLIFE;
         } else if ( selectedTogle == wireWorldRButton){
             return WIREWORLD;
+        } else if ( selectedTogle == langtonAntRButton){
+            return LANGTONANT;
+        } else if (selectedTogle == oneDimRButton){
+            return ONEDIMAUTOMATON;
         }
 
         return 0;
