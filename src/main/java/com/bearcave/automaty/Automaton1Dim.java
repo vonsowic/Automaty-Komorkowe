@@ -21,4 +21,8 @@ public abstract class Automaton1Dim extends Automaton {
     protected void setSize(int size){
         this.size = size;
     }
+
+    protected int getSize(){
+        return size;
+    }
 }

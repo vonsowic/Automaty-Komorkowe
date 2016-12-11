@@ -59,17 +59,24 @@
                                        <children>
                                           <HBox layoutX="148.0" layoutY="11.0" prefHeight="121.0" prefWidth="412.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <VBox prefHeight="121.0" prefWidth="201.0">
+                                                <VBox prefHeight="57.0" prefWidth="200.0">
                                                    <children>
                                                       <HBox prefHeight="25.0" prefWidth="200.0">
                                                          <children>
-                                                            <Label text="Stopien sąsiedzctwa " />
+                                                            <Label text="Stopien sąsiedztwa " />
                                                             <Label fx:id="neighborhoodLevelLabel" prefHeight="18.0" prefWidth="44.0" />
                                                          </children>
                                                       </HBox>
                                                       <Slider fx:id="neighborhoodLevelSlider" max="10" min="1" value="1" />
+                                                      <HBox prefHeight="100.0" prefWidth="200.0">
+                                                         <children>
+                                                            <Label text="Zasada: " />
+                                                            <Label fx:id="ruleLabel" prefHeight="18.0" prefWidth="85.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Slider fx:id="ruleSlider" />
                                                    </children></VBox>
-                                                <VBox prefHeight="121.0" prefWidth="214.0" />
+                                                <VBox fx:id="additionalOptionsBox" prefHeight="121.0" prefWidth="214.0" />
                                              </children>
                                           </HBox>
                                        </children></AnchorPane>

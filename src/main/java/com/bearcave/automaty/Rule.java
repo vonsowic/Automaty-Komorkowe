@@ -8,19 +8,21 @@ import java.util.ArrayList;
 public class Rule {
     private ArrayList<Integer> rules;
 
+    public Rule(){
+        rules = new ArrayList<>();
+        for(int i = 0; i<8; i++){
+            rules.add(0);
+        }
+    }
+
     Rule(Integer rule){
 
-        rules = new ArrayList<>();
-
+        this();
+        int i = 0;
         while( rule>0 ){
-            rules.add(rule%2);
+            rules.set(rules.size()-i-1, rule%2);
             rule/=2;
-        }
-
-        for ( int i = 0; i<rules.size()/2; i++){
-            Integer pom = rules.get(i);
-            rules.set(i, rules.get( rules.size()-1-i));
-            rules.set(rules.size()-1-i, pom);
+            i++;
         }
     }
 
@@ -29,13 +31,13 @@ public class Rule {
             BinaryState middle,
             BinaryState right){
 
-        if ( rules.get( findPatterngetState(left, middle, right)) == 1)
+        if ( rules.get( findPattern(left, middle, right)) == 1)
             return BinaryState.ALIVE;
         else
             return BinaryState.DEAD;
     }
 
-    private int findPatterngetState(
+    private int findPattern(
             BinaryState left,
             BinaryState middle,
             BinaryState right){

@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -47,14 +48,21 @@ public class Controller implements Initializable{
 
     @FXML private Label neighborhoodLevelLabel;
 
+    @FXML private VBox additionalOptionsBox;
+    @FXML private Label ruleLabel;
+    @FXML private Slider ruleSlider;
+
     public final static int GAMEOFLIFE = 1;
     public final static int LANGTONANT= 2;
     public final static int WIREWORLD = 3;
+    public final static int ONEDIMAUTOMATON = 4;
 
 
-    Automaton automaton = null;
+    protected Automaton automaton = null;
     private boolean isPlaying = false;
-    CellMap cellMap;
+    protected CellMap cellMap;
+    protected AdditionalOptions options;
+
 
     public Controller() {
         choosenAutomatonGroup = new ToggleGroup();
@@ -67,16 +75,25 @@ public class Controller implements Initializable{
         langtonAntRButton.setToggleGroup(choosenAutomatonGroup);
         wireWorldRButton.setToggleGroup(choosenAutomatonGroup);
         oneDimRButton.setToggleGroup(choosenAutomatonGroup);
-
-
-        cellMap = new CellMap( this);
-        cellMap.drawMap( simulationWindow );
-
+        choosenAutomatonGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
+            if (choosenAutomatonGroup.getSelectedToggle() != null) {
+                chooseGame();
+            }
+        });
         simulationWindow.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
         simulationWindow.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> System.out.println("Height: " + newSceneHeight));
 
-        neighborhoodLevelSlider.valueProperty().addListener((arg0, arg1, arg2) -> neighborhoodLevelLabel.setText(String.valueOf(getNeighborhoodLevel())));
+        neighborhoodLevelSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
+            neighborhoodLevelLabel.setText(String.valueOf(getNeighborhoodLevel()));
+            if ( cellMap != null)
+                reset();
+        });
 
+        ruleSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
+            ruleLabel.setText(String.valueOf(getRule()));
+            if ( cellMap != null)
+                reset();
+        });
     }
 
     //////////////////////////// Uchwyty do kontrolek //////////////////////////////////////////////////////////////////
@@ -101,24 +118,23 @@ public class Controller implements Initializable{
 
         } else {
             startButton.setText("Start");
-            resetButton.setDisable(false);
-            oneMoveButton.setDisable(false);
-            clearButton.setDisable(false);
+            setDisable(false);
         }
-    }
-
-    public void reset(ActionEvent actionEvent) {
-        automaton = null;
-        setDisable(false);
     }
 
     public void clear(ActionEvent actionEvent) {
         cellMap.clearScreen();
-        reset(null);
+        reset();
     }
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void reset() {
+        automaton = null;
+        setDisable(false);
+    }
+
 
     public int getSelectedGame(){
         Toggle selectedTogle = choosenAutomatonGroup.getSelectedToggle();
@@ -129,6 +145,96 @@ public class Controller implements Initializable{
         }
 
         return 0;
+    }
+
+    public void chooseGame(){
+        switch ( getSelectedGame() ){
+            case GAMEOFLIFE:
+                if (cellMap == null){
+                    cellMap = new GameOfLifeMap(this);
+                } else {
+                    cellMap = new GameOfLifeMap(cellMap);
+                }
+
+                automaton = new GameOfLife(
+                        getCellsWidth(),
+                        getCellsHeigth(),
+                        cellMap.translateForAutomaton(),
+                        getNeighborhoodLevel());
+                break;
+            case WIREWORLD:
+                if (cellMap == null){
+                    cellMap = new WireWorldMap(this);
+                } else {
+                    cellMap = new WireWorldMap(cellMap);
+                }
+                automaton = new WireWorld(
+                        getCellsWidth(),
+                        getCellsHeigth(),
+                        cellMap.translateForAutomaton(),
+                        getNeighborhoodLevel());
+                break;
+            case ONEDIMAUTOMATON:
+                if (cellMap == null){
+                    cellMap = new OneDimAutomatonMap(this);
+                } else {
+                    cellMap = new OneDimAutomatonMap(cellMap);
+                }
+
+                options = new AdditionalOptionsForOneDimAutomaton(this);
+
+                automaton = new OneDimAutomaton(
+                        getCellsWidth(),
+                        getRule(),
+                        cellMap.translateForAutomaton());
+                break;
+        }
+    }
+
+    private void makeOneMove(){
+        if ( automaton == null) {
+            chooseGame();
+        }
+
+        automaton = automaton.nextState();
+        cellMap.updateCellMap(automaton.getCellMap());
+    }
+
+    private void startInBackgroundThread(){
+        // Update the Label on the JavaFx Application Thread
+        while (isPlaying) {
+            Platform.runLater(() -> makeOneMove());
+
+            try {
+                Thread.sleep(getTimeLoop());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void startSimulation(){
+        Runnable task = () -> startInBackgroundThread();
+        Thread backgroundThread = new Thread(task);
+        backgroundThread.setDaemon(true);
+        backgroundThread.start();
+    }
+
+    public void setDisable(boolean isLock){
+        columnSlider.setDisable(isLock);
+        rowSlider.setDisable(isLock);
+        gameOfLifeRButton.setDisable(isLock);
+        neighborhoodLevelSlider.setDisable(isLock);
+        langtonAntRButton.setDisable(isLock);
+        wireWorldRButton.setDisable(isLock);
+        oneDimRButton.setDisable(isLock);
+        oneMoveButton.setDisable(isLock);
+        resetButton.setDisable(isLock);
+        clearButton.setDisable(isLock);
+
+        for ( Map.Entry<CellCoordinates, Shape> entry : cellMap.getMap().entrySet()){
+            entry.getValue().setDisable(isLock);
+        }
     }
 
     private int getTimeLoop(){
@@ -155,77 +261,11 @@ public class Controller implements Initializable{
         return isPlaying;
     }
 
-    public void chooseGame(){
-        switch ( getSelectedGame() ){
-            case GAMEOFLIFE:
-                automaton = new GameOfLife(
-                        getCellsWidth(),
-                        getCellsHeigth(),
-                        cellMap.translateForAutomaton(),
-                        getNeighborhoodLevel());
-            break;
-            case WIREWORLD:
-                automaton = new WireWorld(
-                        getCellsWidth(),
-                        getCellsHeigth(),
-                        cellMap.translateForAutomaton(),
-                        getNeighborhoodLevel());
-            break;
-        }
+    public int getRule(){
+        return (int) ruleSlider.getValue();
     }
 
-    public void setDisable(boolean isLock){
-        columnSlider.setDisable(isLock);
-        rowSlider.setDisable(isLock);
-        gameOfLifeRButton.setDisable(isLock);
-        neighborhoodLevelSlider.setDisable(isLock);
-        langtonAntRButton.setDisable(isLock);
-        wireWorldRButton.setDisable(isLock);
-        oneDimRButton.setDisable(isLock);
-        oneMoveButton.setDisable(isLock);
-        resetButton.setDisable(isLock);
-        clearButton.setDisable(isLock);
-
-        for ( Map.Entry<CellCoordinates, Shape> entry : cellMap.cellMap.entrySet()){
-            entry.getValue().setDisable(isLock);
-        }
+    public VBox getAdditionalOptionsBox() {
+        return additionalOptionsBox;
     }
-
-    private void makeOneMove(){
-        if ( automaton == null)
-            chooseGame();
-
-        automaton = automaton.nextState();
-        cellMap.updateCellMap(automaton.getCellMap());
-    }
-
-    private void startInBackgroundThread(){
-        // Update the Label on the JavaFx Application Thread
-        while (isPlaying) {
-            Platform.runLater(() -> makeOneMove());
-
-            try {
-                Thread.sleep(getTimeLoop());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void startSimulation(){
-
-        // Create a Runnable
-        Runnable task = () -> startInBackgroundThread();
-
-        // Run the task in a background thread
-        Thread backgroundThread = new Thread(task);
-        // Terminate the running thread if the application exits
-        backgroundThread.setDaemon(true);
-        // Start the thread
-        backgroundThread.start();
-
-    }
-
-
-
 }
