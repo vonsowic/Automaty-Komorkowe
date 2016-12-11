@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import java.util.Map;
 public abstract class CellMap{
 
     protected int cellSize = 12;
-    protected Map<CellCoordinates, Shape> automatonMap;
+    protected ArrayList<ArrayList<Shape>> automatonMap;
     protected Map<CellState, Color> cellDictionary;
     protected Controller context;
     protected Pane simulationWindow;
@@ -50,40 +51,50 @@ public abstract class CellMap{
     }
 
     public void updateCellMap(Map<CellCoordinates, CellState> map) {
-        for (Map.Entry<CellCoordinates, Shape> entry : automatonMap.entrySet()) {
-            // do wejsciowej wartosci zawierajaca kolo kolor jest ustawiany zgodnie ze stanem automatonMap o tej samej pozycji co kolo
-            entry.getValue().setFill( getCellColor( map.get(entry.getKey())));
+        for ( int i=0; i<automatonMap.size(); i++){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                automatonMap.get(i).get(j).setFill( getCellColor( map.get(new Coords2d(i, j))));;
+            }
         }
     }
 
     public void clearScreen(){
-        for (Map.Entry<CellCoordinates, Shape> entry : automatonMap.entrySet()) {
-            entry.getValue().setFill( getCellColor( BinaryState.ALIVE));
+        for ( int i=0; i<automatonMap.size(); i++){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                automatonMap.get(i).get(j).setFill( getCellColor( BinaryState.ALIVE));
+            }
         }
+
         createMap(context.getCellsWidth(), context.getCellsHeigth());
         drawMap();
         setCellsPositions();
     }
 
     public void drawMap(){
-        for (Map.Entry<CellCoordinates, Shape> entry : automatonMap.entrySet()) {
-            simulationWindow.getChildren().add(entry.getValue());
+        for ( int i=0; i<automatonMap.size(); i++){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                simulationWindow.getChildren().add(automatonMap.get(i).get(j));
+            }
         }
+
         simulationWindow.requestLayout();
     }
 
     public void setCellsPositions(){
-        for (Map.Entry<CellCoordinates, Shape> entry : automatonMap.entrySet()) {
-            entry.getValue().setLayoutX((entry.getKey().getX()+1)*cellSize);
-            entry.getValue().setLayoutY((entry.getKey().getY()+1)*cellSize);
+        for ( int i=0; i<automatonMap.size(); i++){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                automatonMap.get(i).get(j).setLayoutX((i+1)*cellSize);
+                automatonMap.get(i).get(j).setLayoutY((j+1)*cellSize);
+            }
         }
+
     }
 
     public void createMap(int x, int y){
-        automatonMap = new HashMap<>();
+        automatonMap = new ArrayList<>();
         for (int i=0; i<x; i++){
+            ArrayList<Shape> tmp = new ArrayList<>();
             for(int m=0; m<y; m++){
-                Coords2d coords = new Coords2d(i, m);
                 Rectangle cell = new Rectangle( cellSize, cellSize, getCellColor(defaultState));
 
                 // if ctrl is clicked, then draw on pane
@@ -94,33 +105,38 @@ public abstract class CellMap{
 
                 cell.setOnMouseClicked( event -> clickOnCell(cell));
 
-                automatonMap.put(coords, cell);
+                tmp.add(cell);
             }
+            automatonMap.add((ArrayList) tmp.clone());
         }
     }
 
     public void changeMap(){
-        for ( Map.Entry<CellCoordinates, Shape> entry : getMap().entrySet()){
 
-            Shape cell = entry.getValue();
-            // if ctrl is clicked, then draw on pane
-            cell.setOnMouseExited(t -> {
-                if(t.isControlDown())
-                    clickOnCell(cell);
-            });
+        for ( int i=0; i<automatonMap.size(); i++){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                Shape cell = automatonMap.get(i).get(j);
+                // if ctrl is clicked, then draw on pane
+                cell.setOnMouseExited(t -> {
+                    if(t.isControlDown())
+                        clickOnCell(cell);
+                });
 
-            cell.setOnMouseClicked( event -> clickOnCell(cell));
+                cell.setOnMouseClicked( event -> clickOnCell(cell));
+            }
         }
     }
 
     public Map<CellCoordinates, CellState> translateForAutomaton(){
         Map<CellCoordinates, CellState> map = new HashMap<>();
-        for (Map.Entry<CellCoordinates, Shape> entry : automatonMap.entrySet()) {
-            map.put(
-                    entry.getKey(),
-                    getCellState(
-                            getCellColor(
-                                    entry.getKey())));
+        for ( int i=0; i<automatonMap.size(); i++){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                map.put(
+                        new Coords2d(i, j),
+                        getCellState(
+                                getCellColor(
+                                        new Coords2d(i, j))));
+            }
         }
 
         return map;
@@ -146,10 +162,10 @@ public abstract class CellMap{
     }
 
     protected Color getCellColor(CellCoordinates coords){
-        return (Color) automatonMap.get(coords).getFill();
+        return (Color) automatonMap.get(coords.getX()).get(coords.getY()).getFill();
     }
 
-    protected Map<CellCoordinates, Shape> getMap(){
+    protected ArrayList<ArrayList<Shape>> getMap(){
         return automatonMap;
     }
 }

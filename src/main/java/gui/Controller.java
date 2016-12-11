@@ -236,8 +236,10 @@ public class Controller implements Initializable{
         resetButton.setDisable(isLock);
         clearButton.setDisable(isLock);
 
-        for ( Map.Entry<CellCoordinates, Shape> entry : cellMap.getMap().entrySet()){
-            entry.getValue().setDisable(isLock);
+        for ( int i=0; i<cellMap.getMap().size(); i++){
+            for ( int j=0; j<cellMap.getMap().get(i).size(); j++){
+                cellMap.getMap().get(i).get(j).setDisable(isLock);
+            }
         }
     }
 

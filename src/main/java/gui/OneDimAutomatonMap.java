@@ -45,15 +45,13 @@ public class OneDimAutomatonMap extends CellMap {
     @Override
     public Map<CellCoordinates, CellState> translateForAutomaton(){
         Map<CellCoordinates, CellState> map = new HashMap<>();
-        for (Map.Entry<CellCoordinates, Shape> entry : automatonMap.entrySet()) {
-            if ( entry.getKey().getY() == 0) {
-                Coords1D coords = new Coords1D(entry.getKey().getX());
-                map.put(
-                        coords,
-                        getCellState(
-                                getCellColor(
-                                        entry.getKey())));
-            }
+        for ( int i=0; i<automatonMap.size(); i++){
+            Coords1D coords = new Coords1D(i);
+            map.put(
+                    coords,
+                    getCellState(
+                            getCellColor(
+                                    new Coords2d(i, 0))));
         }
 
         return map;
@@ -61,18 +59,14 @@ public class OneDimAutomatonMap extends CellMap {
 
     @Override
     public void updateCellMap(Map<CellCoordinates, CellState> map) {
-
-        for ( int i=context.getCellsHeigth()-1; i>0; i--){
-            for (int j=0; j<context.getCellsWidth(); j++ ){
-                getMap()
-                        .get(new Coords2d(i, j))
-                        .setFill(getCellColor(new Coords2d(i-1, j)));
+        for ( int i=automatonMap.size()-1; i>0; i--){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                getMap().get(i).get(j).setFill(getCellColor(new Coords2d(i-1, j)));
             }
         }
 
-        for (Map.Entry<CellCoordinates, CellState> entry : map.entrySet()) {
-            // do wejsciowej wartosci zawierajaca kolo kolor jest ustawiany zgodnie ze stanem automatonMap o tej samej pozycji co kolo
-            getMap().get(new Coords2d(entry.getKey().getX(), entry.getKey().getY())).setFill(getCellColor(map.get(entry.getKey())));
+        for ( int i=0; i<automatonMap.size(); i++){
+            getMap().get(i).get(0).setFill(getCellColor(map.get(new Coords2d(i, 0))));
         }
     }
 }
