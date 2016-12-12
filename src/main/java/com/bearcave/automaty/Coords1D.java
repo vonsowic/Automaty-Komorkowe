@@ -23,7 +23,22 @@ public class Coords1D implements CellCoordinates{
     }
 
     public void setX(int width) {
-        this.setX(width);
+        size = width;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coords1D)) return false;
+
+        Coords1D coords1D = (Coords1D) o;
+
+        return size == coords1D.size;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return size;
+    }
 }

@@ -26,6 +26,7 @@ public abstract class CellMap{
     public CellMap(Controller context){
         this.context = context;
         simulationWindow = context.getSimulationWindow();
+
     }
 
     public CellMap(CellMap previousMap){
@@ -76,18 +77,22 @@ public abstract class CellMap{
                 simulationWindow.getChildren().add(automatonMap.get(i).get(j));
             }
         }
+        simulationWindow.requestLayout();
+    }
 
+
+    public void setCellsPositions(int interval){
+        for ( int i=0; i<automatonMap.size(); i++){
+            for ( int j=0; j<automatonMap.get(i).size(); j++){
+                automatonMap.get(i).get(j).setLayoutX((i)*cellSize+i*interval);
+                automatonMap.get(i).get(j).setLayoutY((j)*cellSize+j*interval);
+            }
+        }
         simulationWindow.requestLayout();
     }
 
     public void setCellsPositions(){
-        for ( int i=0; i<automatonMap.size(); i++){
-            for ( int j=0; j<automatonMap.get(i).size(); j++){
-                automatonMap.get(i).get(j).setLayoutX((i+1)*cellSize);
-                automatonMap.get(i).get(j).setLayoutY((j+1)*cellSize);
-            }
-        }
-
+        setCellsPositions(0);
     }
 
     public void createMap(int x, int y){
@@ -143,7 +148,11 @@ public abstract class CellMap{
     }
 
     protected void calculateCellSize(){
-
+        cellSize = (
+                (int) Math.min(simulationWindow.getWidth(),
+                        simulationWindow.getHeight()))/
+                ( Math.max(context.getCellsWidth(),
+                        context.getCellsHeigth()));
     }
 
     protected CellState getCellState(Color color){
@@ -168,5 +177,6 @@ public abstract class CellMap{
     protected ArrayList<ArrayList<Shape>> getMap(){
         return automatonMap;
     }
+
 }
 

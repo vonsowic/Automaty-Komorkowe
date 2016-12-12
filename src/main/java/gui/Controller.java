@@ -1,25 +1,13 @@
 package gui;
 
-
 import com.bearcave.automaty.*;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-
 import java.net.URL;
 import java.util.*;
 
@@ -35,7 +23,7 @@ public class Controller implements Initializable{
 
     @FXML private Button oneMoveButton;
     @FXML private Button startButton;
-    @FXML private Button resetButton;
+    @FXML private Button intervalButton;
     @FXML private Button clearButton;
 
     @FXML private Pane simulationWindow;
@@ -60,8 +48,8 @@ public class Controller implements Initializable{
 
     protected Automaton automaton = null;
     private boolean isPlaying = false;
+    private boolean isIntervalSet = false;
     protected CellMap cellMap;
-    protected AdditionalOptions options;
 
 
     public Controller() {
@@ -127,6 +115,20 @@ public class Controller implements Initializable{
         reset();
     }
 
+    /**
+     * set or remove intervals betwen cells
+     */
+    public void setInterval(ActionEvent actionEvent) {
+        if (isIntervalSet){
+            intervalButton.setText("Dodaj odstępy");
+            cellMap.setCellsPositions(0);
+        } else {
+            intervalButton.setText("Usuń odstępy");
+            cellMap.setCellsPositions(1);
+        }
+        isIntervalSet = !isIntervalSet;
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -185,7 +187,7 @@ public class Controller implements Initializable{
                     cellMap = new OneDimAutomatonMap(cellMap);
                 }
 
-                options = new AdditionalOptionsForOneDimAutomaton(this);
+                //options = new AdditionalOptionsForOneDimAutomaton(this);
 
                 automaton = new OneDimAutomaton(
                         getCellsWidth(),
@@ -233,8 +235,8 @@ public class Controller implements Initializable{
         wireWorldRButton.setDisable(isLock);
         oneDimRButton.setDisable(isLock);
         oneMoveButton.setDisable(isLock);
-        resetButton.setDisable(isLock);
         clearButton.setDisable(isLock);
+        ruleSlider.setDisable(isLock);
 
         for ( int i=0; i<cellMap.getMap().size(); i++){
             for ( int j=0; j<cellMap.getMap().get(i).size(); j++){
@@ -274,4 +276,6 @@ public class Controller implements Initializable{
     public VBox getAdditionalOptionsBox() {
         return additionalOptionsBox;
     }
+
+
 }

@@ -9,6 +9,7 @@ import javafx.scene.shape.Shape;
  * Created by miwas on 10.12.16.
  */
 public class GameOfLifeMap extends CellMap {
+
     public GameOfLifeMap(Controller context) {
         super(context);
         defaultState = BinaryState.DEAD;

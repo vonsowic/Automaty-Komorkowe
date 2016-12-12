@@ -1,7 +1,5 @@
 package com.bearcave.automaty;
 
-import javafx.scene.control.Cell;
-
 import java.util.*;
 
 /**
@@ -48,6 +46,7 @@ public class OneDimAutomaton extends Automaton1Dim {
             Coords1D coords = new Coords1D(i);
             initialMap.put(coords, stateFactory.initialState(coords));
         }
+
         insertStructure(initialMap);
     }
 
@@ -67,6 +66,7 @@ public class OneDimAutomaton extends Automaton1Dim {
         CellCoordinates
                 pom1 = iterator.next(),
                 pom2 = iterator.next();
+
         if ( pom1.getX() < pom2.getX()){
             left = getCellState(pom1);
             right = getCellState(pom2);
@@ -74,7 +74,6 @@ public class OneDimAutomaton extends Automaton1Dim {
             left = getCellState(pom2);
             right = getCellState(pom1);
         }
-
         return rule.getState((BinaryState) left, (BinaryState)currentState, (BinaryState) right);
     }
 }

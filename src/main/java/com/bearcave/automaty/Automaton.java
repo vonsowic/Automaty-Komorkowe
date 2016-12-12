@@ -1,5 +1,6 @@
 package com.bearcave.automaty;
 
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +32,8 @@ public abstract class Automaton {
         Automaton automaton = newInstance();
         CellCoordinates coord = initialCoordinates();
         boolean endLoop = false;
-        while ( !endLoop){
+
+        while ( !endLoop ){
             automaton.cells.put(
                     coord,
                     nextCellState(

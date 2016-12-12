@@ -59,14 +59,13 @@ public class OneDimAutomatonMap extends CellMap {
 
     @Override
     public void updateCellMap(Map<CellCoordinates, CellState> map) {
-        for ( int i=automatonMap.size()-1; i>0; i--){
-            for ( int j=0; j<automatonMap.get(i).size(); j++){
-                getMap().get(i).get(j).setFill(getCellColor(new Coords2d(i-1, j)));
+        for ( int j=context.getCellsHeigth()-1; j>0; j--){
+            for ( int i=0; i<automatonMap.get(i).size(); i++){
+                getMap().get(i).get(j).setFill(getCellColor(new Coords2d(i, j-1)));
             }
         }
-
-        for ( int i=0; i<automatonMap.size(); i++){
-            getMap().get(i).get(0).setFill(getCellColor(map.get(new Coords2d(i, 0))));
+        for(Map.Entry<CellCoordinates, CellState> entry : map.entrySet()){
+            getMap().get(entry.getKey().getX()).get(0).setFill(getCellColor(entry.getValue()));
         }
     }
 }

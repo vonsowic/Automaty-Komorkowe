@@ -35,7 +35,7 @@
                                 <Separator prefHeight="12.0" prefWidth="136.0" />
                                 <Button id="OneMoveButton" fx:id="oneMoveButton" mnemonicParsing="false" onAction="#oneMove" prefHeight="26.0" prefWidth="156.0" styleClass="button-flat" text="Jeden ruch" />
                                 <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSimulation" prefHeight="26.0" prefWidth="157.0" styleClass="button-flat" text="Start" />
-                                <Button fx:id="resetButton" mnemonicParsing="false" onAction="#reset" prefHeight="38.0" prefWidth="158.0" text="Reset" />
+                                <Button fx:id="intervalButton" mnemonicParsing="false" onAction="#setInterval" prefHeight="38.0" prefWidth="158.0" text="Dodaj odstępy" />
                         <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clear" prefHeight="38.0" prefWidth="176.0" text="Czyść" />
 
                             </children>
@@ -74,7 +74,7 @@
                                                             <Label fx:id="ruleLabel" prefHeight="18.0" prefWidth="85.0" />
                                                          </children>
                                                       </HBox>
-                                                      <Slider fx:id="ruleSlider" />
+                                                      <Slider fx:id="ruleSlider" max="255.0" value="30.0" />
                                                    </children></VBox>
                                                 <VBox fx:id="additionalOptionsBox" prefHeight="121.0" prefWidth="214.0" />
                                              </children>

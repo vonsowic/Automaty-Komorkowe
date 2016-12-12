@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Created by miwas on 10.12.16.
+ * Set rule for OneDimAutomaton
  */
 public class Rule {
     private ArrayList<Integer> rules;
@@ -18,12 +19,13 @@ public class Rule {
     Rule(Integer rule){
 
         this();
-        int i = 0;
+        int i = rules.size()-1;
         while( rule>0 ){
-            rules.set(rules.size()-i-1, rule%2);
+            rules.set(i, rule%2);
             rule/=2;
-            i++;
+            i--;
         }
+
     }
 
     public BinaryState getState(
@@ -31,10 +33,16 @@ public class Rule {
             BinaryState middle,
             BinaryState right){
 
-        if ( rules.get( findPattern(left, middle, right)) == 1)
-            return BinaryState.ALIVE;
-        else
-            return BinaryState.DEAD;
+
+        if ( left == null ) left = BinaryState.DEAD;
+        if ( middle == null ) middle = BinaryState.DEAD;
+        if ( right == null ) right = BinaryState.DEAD;
+
+        if (rules.get(findPattern(left, middle, right)) == 1)
+                return BinaryState.ALIVE;
+            else
+                return BinaryState.DEAD;
+
     }
 
     private int findPattern(
@@ -49,11 +57,10 @@ public class Rule {
                         switch (right){
                             case ALIVE:
                                 return 0;
-                            case DEAD:
+                            default:
                                 return 1;
                         }
-                        break;
-                    case DEAD:
+                    default:
                         switch (right){
                             case ALIVE:
                                 return 2;
@@ -63,26 +70,26 @@ public class Rule {
                         break;
                 }
                 break;
-            case DEAD:
+            default:
                 switch (middle){
                     case ALIVE:
                         switch (right){
                             case ALIVE:
                                 return 4;
-                            case DEAD:
+                            default:
                                 return 5;
                         }
-                    case DEAD:
+                    default:
                         switch (right){
                             case ALIVE:
                                 return 6;
-                            case DEAD:
+                            default:
                                 return 7;
                         }
-                        break;
                 }
-                break;
         }
-        return -1;
+
+        return -1;  // unreachable, but sth must be returned
+
     }
 }
