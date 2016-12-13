@@ -7,14 +7,22 @@ public abstract class Automaton1Dim extends Automaton {
     private int size;
 
     protected boolean hasNextCoordinates(CellCoordinates coords) {
-        return false;
+        return (coords.getX()-1 < size);
     }
 
-    protected CellCoordinates initialCoordiantes(CellCoordinates cellCoords){
-        return null;
+    protected CellCoordinates initialCoordinates() {
+        return new Coords1D(0);
     }
 
-    protected CellCoordinates nextCoordiantes(CellCoordinates cellCoords){
-        return null;
+    protected CellCoordinates nextCoordinates(CellCoordinates cellCoords){
+        return new Coords1D(cellCoords.getX() + 1);
+    }
+
+    protected void setSize(int size){
+        this.size = size;
+    }
+
+    protected int getSize(){
+        return size;
     }
 }

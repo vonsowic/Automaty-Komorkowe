@@ -1,22 +1,13 @@
 package gui;
 
-
 import com.bearcave.automaty.*;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
-
+import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.*;
 
@@ -28,11 +19,12 @@ public class Controller implements Initializable{
     @FXML private Slider timeLoopSlider;
     @FXML private Slider rowSlider;
     @FXML private Slider columnSlider;
+    @FXML private Slider neighborhoodLevelSlider;
 
     @FXML private Button oneMoveButton;
     @FXML private Button startButton;
-    @FXML private Button resetButton;
-
+    @FXML private Button intervalButton;
+    @FXML private Button clearButton;
 
     @FXML private Pane simulationWindow;
 
@@ -40,17 +32,30 @@ public class Controller implements Initializable{
     @FXML private RadioButton gameOfLifeRButton;
     @FXML private RadioButton langtonAntRButton;
     @FXML private RadioButton wireWorldRButton;
+    @FXML private RadioButton oneDimRButton;
 
-    private final static int GAMEOFLIFE = 1;
-    private final static int LANGTONANT= 2;
-    private final static int WIREWORLD = 3;
-    private int choosenGame = 0;
+    @FXML private Label neighborhoodLevelLabel;
+
+    @FXML private VBox additionalOptionsBox;
+    @FXML private Label ruleLabel;
+    @FXML private Slider ruleSlider;
+
+    @FXML private Label generationLabel;
+    private int generation = 0;
+
+    public final static int GAMEOFLIFE = 1;
+    public final static int LANGTONANT= 2;
+    public final static int WIREWORLD = 3;
+    public final static int ONEDIMAUTOMATON = 4;
 
 
-    Automaton automaton = null;
+
+
+    protected Automaton automaton = null;
     private boolean isPlaying = false;
-    private boolean isSetUp = false;
-    CellMap cellMap;
+    private boolean isIntervalSet = false;
+    protected CellMap cellMap;
+
 
     public Controller() {
         choosenAutomatonGroup = new ToggleGroup();
@@ -62,10 +67,26 @@ public class Controller implements Initializable{
         gameOfLifeRButton.setToggleGroup(choosenAutomatonGroup);
         langtonAntRButton.setToggleGroup(choosenAutomatonGroup);
         wireWorldRButton.setToggleGroup(choosenAutomatonGroup);
+        oneDimRButton.setToggleGroup(choosenAutomatonGroup);
+        choosenAutomatonGroup.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
+            if (choosenAutomatonGroup.getSelectedToggle() != null) {
+                chooseGame();
+            }
+        });
+        simulationWindow.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
+        simulationWindow.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> System.out.println("Height: " + newSceneHeight));
 
+        neighborhoodLevelSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
+            neighborhoodLevelLabel.setText(String.valueOf(getNeighborhoodLevel()));
+            if ( cellMap != null)
+                reset();
+        });
 
-        cellMap = new CellMap( getCellsWidth(), getCellsHeigth());
-        cellMap.drawMap( simulationWindow );
+        ruleSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
+            ruleLabel.setText(String.valueOf(getRule()));
+            if ( cellMap != null)
+                reset();
+        });
     }
 
     //////////////////////////// Uchwyty do kontrolek //////////////////////////////////////////////////////////////////
@@ -90,67 +111,104 @@ public class Controller implements Initializable{
 
         } else {
             startButton.setText("Start");
-            resetButton.setDisable(false);
-            oneMoveButton.setDisable(false);
+            setDisable(false);
         }
     }
 
+    public void clear(ActionEvent actionEvent) {
+        cellMap.clearScreen();
+        reset();
+    }
+
+    /**
+     * set or remove intervals betwen cells
+     */
+    public void setInterval(ActionEvent actionEvent) {
+        if (isIntervalSet){
+            intervalButton.setText("Dodaj odstępy");
+            cellMap.setCellsPositions(0);
+        } else {
+            intervalButton.setText("Usuń odstępy");
+            cellMap.setCellsPositions(1);
+        }
+        isIntervalSet = !isIntervalSet;
+    }
 
 
-    ///////////////////////////////// Metody prywatne //////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private int getSelectedGame(){
+    public void reset() {
+        automaton = null;
+        setDisable(false);
+        initializeGeneretion();
+    }
+
+
+    public int getSelectedGame(){
         Toggle selectedTogle = choosenAutomatonGroup.getSelectedToggle();
         if ( selectedTogle == gameOfLifeRButton){
             return GAMEOFLIFE;
         } else if ( selectedTogle == wireWorldRButton){
             return WIREWORLD;
+        } else if ( selectedTogle == langtonAntRButton){
+            return LANGTONANT;
+        } else if (selectedTogle == oneDimRButton){
+            return ONEDIMAUTOMATON;
         }
 
         return 0;
     }
 
-    private int getTimeLoop(){
-        return (int) timeLoopSlider.getValue();
-    }
-
-    private int getCellsWidth(){
-        return (int) rowSlider.getValue();
-    }
-
-    private int getCellsHeigth(){
-        return (int) columnSlider.getValue();
-    }
-
-    private void chooseGame(){
+    public void chooseGame(){
         switch ( getSelectedGame() ){
             case GAMEOFLIFE:
-                automaton = new GameOfLife(getCellsWidth(), getCellsHeigth(), cellMap.translateForAutomaton());
-            break;
+                if (cellMap == null){
+                    cellMap = new GameOfLifeMap(this);
+                } else {
+                    cellMap = new GameOfLifeMap(cellMap);
+                }
+
+                automaton = new GameOfLife(
+                        getCellsWidth(),
+                        getCellsHeigth(),
+                        cellMap.translateForAutomaton(),
+                        getNeighborhoodLevel());
+                break;
             case WIREWORLD:
-                automaton = new WireWorld(getCellsWidth(), getCellsHeigth(), cellMap.translateForAutomaton());
-            break;
-        }
-    }
+                if (cellMap == null){
+                    cellMap = new WireWorldMap(this);
+                } else {
+                    cellMap = new WireWorldMap(cellMap);
+                }
+                automaton = new WireWorld(
+                        getCellsWidth(),
+                        getCellsHeigth(),
+                        cellMap.translateForAutomaton(),
+                        getNeighborhoodLevel());
+                break;
+            case ONEDIMAUTOMATON:
+                if (cellMap == null){
+                    cellMap = new OneDimAutomatonMap(this);
+                } else {
+                    cellMap = new OneDimAutomatonMap(cellMap);
+                }
 
-    private void setDisable(boolean isLock){
-        columnSlider.setDisable(isLock);
-        rowSlider.setDisable(isLock);
-        gameOfLifeRButton.setDisable(isLock);
-        langtonAntRButton.setDisable(isLock);
-        wireWorldRButton.setDisable(isLock);
-        oneMoveButton.setDisable(isLock);
-        resetButton.setDisable(isLock);
+                //options = new AdditionalOptionsForOneDimAutomaton(this);
 
-        for ( Map.Entry<CellCoordinates, Shape> entry : cellMap.cellMap.entrySet()){
-            entry.getValue().setDisable(isLock);
+                automaton = new OneDimAutomaton(
+                        getCellsWidth(),
+                        getRule(),
+                        cellMap.translateForAutomaton());
+                break;
         }
     }
 
     private void makeOneMove(){
-        if ( automaton == null)
+        if ( automaton == null) {
             chooseGame();
+        }
 
+        incrementGeneration();
         automaton = automaton.nextState();
         cellMap.updateCellMap(automaton.getCellMap());
     }
@@ -169,209 +227,70 @@ public class Controller implements Initializable{
     }
 
     private void startSimulation(){
-
-        // Create a Runnable
         Runnable task = () -> startInBackgroundThread();
-
-        // Run the task in a background thread
         Thread backgroundThread = new Thread(task);
-        // Terminate the running thread if the application exits
         backgroundThread.setDaemon(true);
-        // Start the thread
         backgroundThread.start();
-
     }
 
-    public void reset(ActionEvent actionEvent) {
-        automaton = null;
-        setDisable(false);
+    public void setDisable(boolean isLock){
+        columnSlider.setDisable(isLock);
+        rowSlider.setDisable(isLock);
+        gameOfLifeRButton.setDisable(isLock);
+        neighborhoodLevelSlider.setDisable(isLock);
+        langtonAntRButton.setDisable(isLock);
+        wireWorldRButton.setDisable(isLock);
+        oneDimRButton.setDisable(isLock);
+        oneMoveButton.setDisable(isLock);
+        clearButton.setDisable(isLock);
+        ruleSlider.setDisable(isLock);
+
+        for ( int i=0; i<cellMap.getMap().size(); i++){
+            for ( int j=0; j<cellMap.getMap().get(i).size(); j++){
+                cellMap.getMap().get(i).get(j).setDisable(isLock);
+            }
+        }
     }
 
-///////////////////////// CELLMAP //////////////////////////////////////////////////////////////////////////////////
-    private class CellMap{
-
-        private int cellSize = 12;
-        Map<CellCoordinates, Shape> cellMap;
-        Map<CellState, Color> cellDictionary;
-
-
-        CellMap(int x, int y){
-            createCellDictionary();
-            createMap(x, y);
-            setCellsPositions();
-        }
-
-        private void createCellDictionary() {
-            cellDictionary = new HashMap<>();
-
-            cellDictionary.put(QuadState.DEAD, Color.LIGHTGRAY);
-            cellDictionary.put(QuadState.BLUE, Color.ALICEBLUE);
-            cellDictionary.put(QuadState.GREEN, Color.GREEN);
-            cellDictionary.put(QuadState.YELLOW, Color.YELLOW);
-            cellDictionary.put(QuadState.RED, Color.RED);
-            cellDictionary.put(null, Color.DARKRED);
-        }
-
-        private CellState getAutomatonCellState(CellState quadstate){
-
-            //game of life
-            if (choosenAutomatonGroup.getSelectedToggle() == gameOfLifeRButton) {
-                switch ((QuadState) quadstate) {
-                    case YELLOW:
-                        return BinaryState.ALIVE;
-                    default:
-                        return BinaryState.DEAD;
-                }
-            } else if (choosenAutomatonGroup.getSelectedToggle() == wireWorldRButton){
-                switch ((QuadState) quadstate) {
-                    case YELLOW:
-                        return WireElectronState.WIRE;
-                    case RED:
-                        return WireElectronState.ELECTRON_HEAD;
-                    case GREEN:
-                        return WireElectronState.ELECTRON_TAIL;
-                    default:
-                        return WireElectronState.VOID;
-                }
-            }
-            return null;
-        }
-
-        private Map<CellCoordinates, CellState> translateForAutomaton(){
-            Map<CellCoordinates, CellState> automatonMap = new HashMap<>();
-            for (Map.Entry<CellCoordinates, Shape> entry : cellMap.entrySet()) {
-                automatonMap.put(entry.getKey(), getAutomatonCellState(
-                        getCellState(
-                                getCellColor(
-                                        entry.getKey()))));
-            }
-
-        return automatonMap;
+    private int getTimeLoop(){
+        return (int) timeLoopSlider.getValue();
     }
 
-        private QuadState translateCellFromAutomaton(BinaryState state){
-            switch (state){
-                case ALIVE:
-                    return QuadState.YELLOW;
-                default:
-                    return QuadState.DEAD;
-            }
-        }
+    private int getNeighborhoodLevel(){
+        return (int) neighborhoodLevelSlider.getValue();
+    }
 
-        private QuadState translateCellFromAutomaton(WireElectronState state){
-            switch (state){
-                case WIRE:
-                    return QuadState.YELLOW;
-                case ELECTRON_HEAD:
-                    return QuadState.RED;
-                case ELECTRON_TAIL:
-                    return QuadState.GREEN;
-                default:
-                    return QuadState.DEAD;
-            }
-        }
+    public int getCellsWidth(){
+        return (int) rowSlider.getValue();
+    }
 
-        void createMap(int x, int y){
-            cellMap = new HashMap<>();
-            for (int i=0; i<x; i++){
-                for(int m=0; m<y; m++){
-                    Coords2d coords = new Coords2d(i, m);
-                    Rectangle cell = new Rectangle( cellSize, cellSize, getCellColor(QuadState.DEAD));
+    public int getCellsHeigth(){
+        return (int) columnSlider.getValue();
+    }
 
-                    // if ctrl is clicked, then draw on pane
-                    cell.setOnMouseExited(t -> {
-                        if(t.isControlDown())
-                            clickOnCell(cell);
-                    });
+    public Pane getSimulationWindow() {
+        return simulationWindow;
+    }
 
-                    cell.setOnMouseClicked( event -> clickOnCell(cell));
+    public boolean isPlaying(){
+        return isPlaying;
+    }
 
+    public int getRule(){
+        return (int) ruleSlider.getValue();
+    }
 
-                    cellMap.put(coords, cell);
-                }
-            }
-        }
+    public VBox getAdditionalOptionsBox() {
+        return additionalOptionsBox;
+    }
 
-        void updateCellMap(Map<CellCoordinates, CellState> automatonMap){
-            CellState state = null;
-            for (Map.Entry<CellCoordinates, Shape> entry : cellMap.entrySet()) {
-                switch ( getSelectedGame() ){
-                    case GAMEOFLIFE:
-                        state = translateCellFromAutomaton((BinaryState) automatonMap.get(entry.getKey()));
-                        break;
-                    case WIREWORLD:
-                        state = translateCellFromAutomaton((WireElectronState) automatonMap.get(entry.getKey()));
-                        break;
-                }
-                // do wejsciowej wartosci zawierajaca kolo kolor jest ustawiany zgodnie ze stanem automatonMap o tej samej pozycji co kolo
-                entry.getValue().setFill( getCellColor( state ));
+    private void incrementGeneration(){
+        generationLabel.setText( String.valueOf(++generation));
+    }
 
-            }
-        }
-
-        void drawMap(Pane pane){
-            for (Map.Entry<CellCoordinates, Shape> entry : cellMap.entrySet()) {
-                pane.getChildren().add(entry.getValue());
-            }
-            pane.requestLayout();
-        }
-
-        void setCellsPositions(){
-            for (Map.Entry<CellCoordinates, Shape> entry : cellMap.entrySet()) {
-                entry.getValue().setLayoutX((entry.getKey().getWidth()+1)*cellSize);
-                entry.getValue().setLayoutY((entry.getKey().getHeight()+1)*cellSize);
-            }
-        }
-
-        CellState getCellState(Color color){
-            for (Map.Entry<CellState, Color> entry : cellDictionary.entrySet()) {
-                if ( entry.getValue() == color){
-                    return entry.getKey();
-                }
-            }
-
-            // sth must be returned
-            return QuadState.DEAD;
-        }
-
-        Color getCellColor(CellState state){
-            return cellDictionary.get(state);
-        }
-
-        Color getCellColor(CellCoordinates coords){
-            return (Color) cellMap.get(coords).getFill();
-        }
-
-        public void clickOnCell(Shape cell){
-            if ( isPlaying ) return;
-
-            switch ( getSelectedGame()){
-                case GAMEOFLIFE:
-                    if ( cell.getFill() == getCellColor(QuadState.DEAD)) {
-                        cell.setFill(getCellColor(QuadState.YELLOW));
-                    } else {
-                        cell.setFill(getCellColor(QuadState.DEAD));
-                    }
-                    break;
-
-                case WIREWORLD:
-                    switch ((QuadState) getCellState( (Color) cell.getFill() )){
-                        case DEAD:
-                            cell.setFill(getCellColor(QuadState.YELLOW));
-                            break;
-                        case YELLOW:
-                            cell.setFill(getCellColor(QuadState.RED));
-                            break;
-                        case RED:
-                            cell.setFill(getCellColor(QuadState.GREEN));
-                            break;
-                        case GREEN:
-                            cell.setFill(getCellColor(QuadState.DEAD));
-                            break;
-                    }
-                    break;
-            }
-        }
+    private void initializeGeneretion(){
+        generation = 0;
+        generationLabel.setText( String.valueOf(generation));
     }
 
 }

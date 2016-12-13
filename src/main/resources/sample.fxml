@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
@@ -10,60 +7,95 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="559.0" prefWidth="590.0" style="-fx-background-color: #EAEAeA;" stylesheets="@material-fx-v0_3.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
-   <children>
-      <SplitPane dividerPositions="0.29264214046822745" layoutX="-2.0" layoutY="-2.0" prefHeight="581.0" prefWidth="600.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <VBox layoutX="-1.0" layoutY="-1.0" prefHeight="579.0" prefWidth="174.0" styleClass="card">
-                     <children>
-                        <RadioButton fx:id="gameOfLifeRButton" mnemonicParsing="false" text="Gra w życie" />
-                        <RadioButton fx:id="langtonAntRButton" mnemonicParsing="false" text="Mrówka Langtona" />
-                        <RadioButton fx:id="wireWorldRButton" mnemonicParsing="false" text="WireWorld" />
+<AnchorPane prefHeight="624.0" prefWidth="598.0" style="-fx-background-color: #EAEAeA;" stylesheets="@material-fx-v0_3.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+    <children>
+        <SplitPane dividerPositions="0.29264214046822745" layoutX="-2.0" layoutY="-2.0" prefHeight="624.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <VBox layoutX="-1.0" layoutY="-1.0" prefHeight="622.0" prefWidth="170.0" styleClass="card" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <RadioButton fx:id="gameOfLifeRButton" mnemonicParsing="false" text="Gra w życie" />
+                                <RadioButton fx:id="langtonAntRButton" mnemonicParsing="false" text="Mrówka Langtona" />
+                                <RadioButton fx:id="wireWorldRButton" mnemonicParsing="false" text="WireWorld" />
+                        <RadioButton fx:id="oneDimRButton" mnemonicParsing="false" text="Jednowymiaowy" />
 
-                        <Separator prefHeight="13.0" prefWidth="136.0" />
-                        <Label prefHeight="20.0" prefWidth="136.0" styleClass="control-label" text="Czas jednej pętli" />
-                        <Slider fx:id="timeLoopSlider" min="100" max="3000" value="500" />
-                        <Label styleClass="control-label" text="Szerokość" />
-                        <Slider fx:id="columnSlider" min="1.0" value="33.0" />
-                        <Label styleClass="control-label" text="Wysokość" />
-                        <Slider fx:id="rowSlider" min="1.0" value="36.0" />
+                                <Separator prefHeight="13.0" prefWidth="136.0" />
+                                <Label prefHeight="20.0" prefWidth="136.0" styleClass="control-label" text="Czas jednej pętli" />
+                                <Slider fx:id="timeLoopSlider" max="3000" min="100" value="500" />
+                                <Label styleClass="control-label" text="Szerokość" />
+                                <Slider fx:id="columnSlider" min="1.0" value="33.0" />
+                                <Label styleClass="control-label" text="Wysokość" />
+                                <Slider fx:id="rowSlider" min="1.0" value="36.0" />
 
-                        <Separator prefHeight="12.0" prefWidth="136.0" />
-                        <Button id="OneMoveButton" fx:id="oneMoveButton" mnemonicParsing="false" onAction="#oneMove" prefHeight="26.0" prefWidth="156.0" styleClass="button-flat" text="Jeden ruch" />
-                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSimulation" prefHeight="26.0" prefWidth="157.0" styleClass="button-flat" text="Start" />
-                        <Button fx:id="resetButton" mnemonicParsing="false" onAction="#reset" prefHeight="38.0" prefWidth="158.0" text="Reset" />
+                                <Separator prefHeight="12.0" prefWidth="136.0" />
+                                <Button id="OneMoveButton" fx:id="oneMoveButton" mnemonicParsing="false" onAction="#oneMove" prefHeight="26.0" prefWidth="156.0" styleClass="button-flat" text="Jeden ruch" />
+                                <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSimulation" prefHeight="26.0" prefWidth="157.0" styleClass="button-flat" text="Start" />
+                                <Button fx:id="intervalButton" mnemonicParsing="false" onAction="#setInterval" prefHeight="38.0" prefWidth="158.0" text="Dodaj odstępy" />
+                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clear" prefHeight="38.0" prefWidth="176.0" text="Czyść" />
 
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <SplitPane layoutY="-2.0" orientation="VERTICAL" prefHeight="581.0" prefWidth="416.0">
-                    <items>
-                      <AnchorPane prefHeight="283.0" prefWidth="414.0">
-                           <children>
-                              <Pane />
-                              <SplitPane dividerPositions="0.7972270363951474" layoutX="127.0" layoutY="190.0" orientation="VERTICAL" prefHeight="579.0" prefWidth="480.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <items>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="393.0" prefWidth="412.0">
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <SplitPane layoutY="-2.0" orientation="VERTICAL" prefHeight="622.0" prefWidth="416.0">
+                            <items>
+                                <AnchorPane prefHeight="610.0" prefWidth="414.0">
+                                    <children>
+                                        <Pane />
+                                        <SplitPane dividerPositions="0.7972270363951474" layoutX="127.0" layoutY="190.0" orientation="VERTICAL" prefHeight="579.0" prefWidth="480.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <items>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="393.0" prefWidth="412.0">
+                                                    <children>
+                                                        <Pane fx:id="simulationWindow" prefHeight="489.0" prefWidth="412.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                    </children></AnchorPane>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="189.0" prefWidth="412.0">
                                        <children>
-                                          <Pane fx:id="simulationWindow" prefHeight="456.0" prefWidth="412.0" />
+                                          <HBox layoutX="148.0" layoutY="11.0" prefHeight="121.0" prefWidth="412.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <VBox prefHeight="57.0" prefWidth="200.0">
+                                                   <children>
+                                                      <HBox prefHeight="25.0" prefWidth="200.0">
+                                                         <children>
+                                                            <Label text="Stopien sąsiedztwa " />
+                                                            <Label fx:id="neighborhoodLevelLabel" prefHeight="18.0" prefWidth="44.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Slider fx:id="neighborhoodLevelSlider" max="10" min="1" value="1" />
+                                                      <HBox prefHeight="100.0" prefWidth="200.0">
+                                                         <children>
+                                                            <Label text="Zasada: " />
+                                                            <Label fx:id="ruleLabel" prefHeight="18.0" prefWidth="85.0" />
+                                                         </children>
+                                                      </HBox>
+                                                      <Slider fx:id="ruleSlider" max="255.0" value="30.0" />
+                                                   </children></VBox>
+                                                <VBox fx:id="additionalOptionsBox" prefHeight="121.0" prefWidth="214.0">
+                                                   <children>
+                                                      <HBox prefHeight="27.0" prefWidth="213.0">
+                                                         <children>
+                                                            <Label text="Generacja: " />
+                                                            <Label fx:id="generationLabel" prefHeight="18.0" prefWidth="18.0" text="0" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children></VBox>
+                                             </children>
+                                          </HBox>
                                        </children></AnchorPane>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="187.0" prefWidth="412.0" />
-                                </items>
-                              </SplitPane>
-                           </children>
-                        </AnchorPane>
-                    </items>
-                  </SplitPane>
-               </children></AnchorPane>
-        </items>
-      </SplitPane>
-   </children>
+                                            </items>
+                                        </SplitPane>
+                                    </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
+                    </children></AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
 </AnchorPane>

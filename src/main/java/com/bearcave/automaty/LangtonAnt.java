@@ -1,19 +1,21 @@
 package com.bearcave.automaty;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by miwas on 05.11.16.
  */
 public class LangtonAnt extends Automaton2Dim {
 
-    private AntState antDirection = AntState.NORTH;
+    private Map<CellCoordinates, AntState> antsMap;
 
-    public LangtonAnt(int x, int y, Map<CellCoordinates,CellState> initialMap){
-        this.neighborsStrategy = new MoorNeighborhood();
+    public LangtonAnt(
+            int x,
+            int y,
+            Map<CellCoordinates,CellState> initialMap,
+            Map<CellCoordinates,AntState> antsMap){
+
+        this.neighborsStrategy = new VonNeumanNeighborhood();
         this.setSize(x, y);
 
         Map<CellCoordinates, CellState> map = new HashMap();
@@ -22,6 +24,8 @@ public class LangtonAnt extends Automaton2Dim {
         } else {
             this.stateFactory = new GeneralStateFactory(initialMap, BinaryState.DEAD);
         }
+
+        this.antsMap = new HashMap<>( antsMap );
 
         for(int i = 0; i<x; i++) {
             for (int j = 0; j < y; j++) {
@@ -34,26 +38,36 @@ public class LangtonAnt extends Automaton2Dim {
     }
 
     protected Automaton newInstance() {
-        Automaton automaton = new LangtonAnt(this.getWidth(), this.getHeight(), this.getCellMap());
+        Automaton automaton = new LangtonAnt(
+                this.getWidth(),
+                this.getHeight(),
+                this.getCellMap(),
+                this.antsMap
+                );
         return automaton;
     }
 
-    protected CellCoordinates nextCoordinates(CellCoordinates cellCoordinates) {
-
-        return null;
-    }
-
     protected CellState nextCellState(CellState currentState, Set<CellCoordinates> neighborsStates) {
-        if ( currentState == BinaryState.ALIVE){
 
+        if ( antsMap.get(currentState) != AntState.NONE){
+            if ( currentState == BinaryState.ALIVE){
+
+                return BinaryState.DEAD;
+            } else {
+
+            }
+        }
+
+        if ( currentState == BinaryState.ALIVE){
+            //ant has to turn left
+            Iterator iterator = neighborsStates.iterator();
+            while (iterator.hasNext()){
+
+            }
         } else {
+            //ant has to turn right
 
         }
         return null;
-    }
-
-    @Override
-    public void iterate(Automaton automaton) {
-
     }
 }

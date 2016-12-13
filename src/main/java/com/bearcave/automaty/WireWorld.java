@@ -32,8 +32,33 @@ public class WireWorld extends Automaton2Dim {
         insertStructure(map);
     }
 
+    public WireWorld(int x, int y, Map<CellCoordinates,CellState> initialMap, int levelOfNeighborhood){
+        this(x, y, initialMap);
+        this.neighborsStrategy = new MoorNeighborhood(levelOfNeighborhood);
+    }
+
+    public WireWorld(int x,
+                     int y,
+                     Map<CellCoordinates,CellState> previousMap,
+                     CellStateFactory factory,
+                     CellNeighborhood strategy){
+
+        this.neighborsStrategy = strategy;
+        this.stateFactory = factory;
+        this.setSize(x, y);
+
+        insertStructure(previousMap);
+    }
+
+
+
     protected Automaton newInstance() {
-        Automaton automaton = new WireWorld(this.getWidth(), this.getHeight(), getCellMap());
+        Automaton automaton = new WireWorld(
+                this.getWidth(),
+                this.getHeight(),
+                getCellMap(),
+                this.stateFactory,
+                this.neighborsStrategy);
         return automaton;
     }
 

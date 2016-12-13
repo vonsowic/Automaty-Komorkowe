@@ -8,24 +8,24 @@ public class Coords2d implements CellCoordinates {
     private Integer y;
 
     public Coords2d(int width, int height){
-        setWidth(width);
-        setHeight(height);
+        setX(width);
+        setY(height);
     }
 
-    public int getWidth() {
+    public int getX() {
         return x;
     }
 
-    public int getHeight() {
+    public int getY() {
         return y;
     }
 
-    public void setWidth(int width) {
-        x = width;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public void setHeight(int height) {
-        y = height;
+    public void setY(int y) {
+        this.y = y;
     }
 
     @Override
