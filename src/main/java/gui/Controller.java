@@ -40,10 +40,15 @@ public class Controller implements Initializable{
     @FXML private Label ruleLabel;
     @FXML private Slider ruleSlider;
 
+    @FXML private Label generationLabel;
+    private int generation = 0;
+
     public final static int GAMEOFLIFE = 1;
     public final static int LANGTONANT= 2;
     public final static int WIREWORLD = 3;
     public final static int ONEDIMAUTOMATON = 4;
+
+
 
 
     protected Automaton automaton = null;
@@ -135,6 +140,7 @@ public class Controller implements Initializable{
     public void reset() {
         automaton = null;
         setDisable(false);
+        initializeGeneretion();
     }
 
 
@@ -202,6 +208,7 @@ public class Controller implements Initializable{
             chooseGame();
         }
 
+        incrementGeneration();
         automaton = automaton.nextState();
         cellMap.updateCellMap(automaton.getCellMap());
     }
@@ -277,5 +284,13 @@ public class Controller implements Initializable{
         return additionalOptionsBox;
     }
 
+    private void incrementGeneration(){
+        generationLabel.setText( String.valueOf(++generation));
+    }
+
+    private void initializeGeneretion(){
+        generation = 0;
+        generationLabel.setText( String.valueOf(generation));
+    }
 
 }
