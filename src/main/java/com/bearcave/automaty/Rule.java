@@ -17,15 +17,20 @@ public class Rule {
     }
 
     Rule(Integer rule){
-
         this();
+        setRule(rule);
+    }
+
+    /**
+     * @param rule
+     */
+    public void setRule(Integer rule){
         int i = rules.size()-1;
         while( rule>0 ){
             rules.set(i, rule%2);
             rule/=2;
             i--;
         }
-
     }
 
     public BinaryState getState(
@@ -44,6 +49,7 @@ public class Rule {
                 return BinaryState.DEAD;
 
     }
+
 
     private int findPattern(
             BinaryState left,

@@ -45,13 +45,13 @@ public class OneDimAutomatonMap extends CellMap {
     @Override
     public Map<CellCoordinates, CellState> translateForAutomaton(){
         Map<CellCoordinates, CellState> map = new HashMap<>();
-        for ( int i=0; i<automatonMap.size(); i++){
-            Coords1D coords = new Coords1D(i);
+        for ( int x=0; x<automatonMap.get(0).size(); x++){
+            Coords1D coords = new Coords1D(x);
             map.put(
                     coords,
                     getCellState(
                             getCellColor(
-                                    new Coords2d(i, 0))));
+                                    new Coords2d(x, 0))));
         }
 
         return map;
@@ -59,13 +59,23 @@ public class OneDimAutomatonMap extends CellMap {
 
     @Override
     public void updateCellMap(Map<CellCoordinates, CellState> map) {
-        for ( int j=context.getCellsHeigth()-1; j>0; j--){
-            for ( int i=0; i<automatonMap.get(i).size(); i++){
-                getMap().get(i).get(j).setFill(getCellColor(new Coords2d(i, j-1)));
+        for ( int y=automatonMap.size()-1; y>0; y--){ //iteracja po wierszach
+            for ( int x=0; x<automatonMap.get(y).size(); x++){ //iteracja po kolumnach
+                getMap()
+                        .get(y)
+                        .get(x)
+                        .setFill(getCellColor(new Coords2d(x, y-1)));
             }
         }
         for(Map.Entry<CellCoordinates, CellState> entry : map.entrySet()){
-            getMap().get(entry.getKey().getX()).get(0).setFill(getCellColor(entry.getValue()));
+            getMap()
+                    .get(entry.getKey().getY())
+                    .get(entry.getKey().getX())
+                    .setFill(getCellColor(entry.getValue()));
         }
+
+        Automaton.printMap(translateForAutomaton());
     }
+
+
 }

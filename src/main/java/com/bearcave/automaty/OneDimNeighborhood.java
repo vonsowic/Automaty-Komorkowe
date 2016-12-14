@@ -26,7 +26,7 @@ public class OneDimNeighborhood implements CellNeighborhood {
 
         HashSet<CellCoordinates> set = new HashSet<>();
         for ( int i=-n; i<=n; i++){
-            if ( n != 0) {
+            if ( i != 0) {
                 set.add(new Coords1D(coord.getX() + i));
             }
         }

@@ -67,6 +67,7 @@ public class OneDimAutomaton extends Automaton1Dim {
                 pom1 = iterator.next(),
                 pom2 = iterator.next();
 
+
         if ( pom1.getX() < pom2.getX()){
             left = getCellState(pom1);
             right = getCellState(pom2);

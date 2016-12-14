@@ -32,7 +32,8 @@ public abstract class Automaton {
         Automaton automaton = newInstance();
         CellCoordinates coord = initialCoordinates();
         boolean endLoop = false;
-
+        System.out.println("Obecny stan \n ----------------------------------------------");
+        printMap(cells);
         while ( !endLoop ){
             automaton.cells.put(
                     coord,
@@ -45,6 +46,11 @@ public abstract class Automaton {
             else
                 endLoop = true;
         }
+
+        System.out.println(" ----------------------------------------------\nPo obliczeniu");
+        printMap(automaton.cells);
+        System.out.println(" ----------------------------------------------");
+
 
         return automaton;
     }
@@ -60,5 +66,11 @@ public abstract class Automaton {
 
     public Map<CellCoordinates, CellState> getCellMap(){
         return cells;
+    }
+
+    public static void printMap(Map<CellCoordinates, CellState> map){
+        for(Map.Entry<CellCoordinates, CellState> entry : map.entrySet()){
+            System.out.println(entry.getKey().getX()+" : "+entry.getKey().getY()+" - "+entry.getValue());
+        }
     }
 }

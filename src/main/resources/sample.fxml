@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -27,10 +28,6 @@
                                 <Separator prefHeight="13.0" prefWidth="136.0" />
                                 <Label prefHeight="20.0" prefWidth="136.0" styleClass="control-label" text="Czas jednej pętli" />
                                 <Slider fx:id="timeLoopSlider" max="3000" min="100" value="500" />
-                                <Label styleClass="control-label" text="Szerokość" />
-                                <Slider fx:id="columnSlider" min="1.0" value="33.0" />
-                                <Label styleClass="control-label" text="Wysokość" />
-                                <Slider fx:id="rowSlider" min="1.0" value="36.0" />
 
                                 <Separator prefHeight="12.0" prefWidth="136.0" />
                                 <Button id="OneMoveButton" fx:id="oneMoveButton" mnemonicParsing="false" onAction="#oneMove" prefHeight="26.0" prefWidth="156.0" styleClass="button-flat" text="Jeden ruch" />
@@ -67,14 +64,14 @@
                                                             <Label fx:id="neighborhoodLevelLabel" prefHeight="18.0" prefWidth="44.0" />
                                                          </children>
                                                       </HBox>
-                                                      <Slider fx:id="neighborhoodLevelSlider" max="10" min="1" value="1" />
+                                                      <Slider fx:id="neighborhoodLevelSlider" blockIncrement="1.0" max="10" min="1" value="1" />
                                                       <HBox prefHeight="100.0" prefWidth="200.0">
                                                          <children>
                                                             <Label text="Zasada: " />
                                                             <Label fx:id="ruleLabel" prefHeight="18.0" prefWidth="85.0" />
                                                          </children>
                                                       </HBox>
-                                                      <Slider fx:id="ruleSlider" max="255.0" value="30.0" />
+                                                      <Slider fx:id="ruleSlider" blockIncrement="1" max="255" value="30" />
                                                    </children></VBox>
                                                 <VBox fx:id="additionalOptionsBox" prefHeight="121.0" prefWidth="214.0">
                                                    <children>
@@ -84,6 +81,7 @@
                                                             <Label fx:id="generationLabel" prefHeight="18.0" prefWidth="18.0" text="0" />
                                                          </children>
                                                       </HBox>
+                                                      <TextArea editable="false" prefHeight="200.0" prefWidth="200.0" text="Aby rysować, przytrzymaj Shift" />
                                                    </children></VBox>
                                              </children>
                                           </HBox>

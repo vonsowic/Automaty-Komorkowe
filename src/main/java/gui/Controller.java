@@ -17,8 +17,6 @@ import java.util.*;
 public class Controller implements Initializable{
 
     @FXML private Slider timeLoopSlider;
-    @FXML private Slider rowSlider;
-    @FXML private Slider columnSlider;
     @FXML private Slider neighborhoodLevelSlider;
 
     @FXML private Button oneMoveButton;
@@ -48,7 +46,8 @@ public class Controller implements Initializable{
     public final static int WIREWORLD = 3;
     public final static int ONEDIMAUTOMATON = 4;
 
-
+    private int columnNumber = 33;
+    private int rowNumber = 40;
 
 
     protected Automaton automaton = null;
@@ -73,8 +72,8 @@ public class Controller implements Initializable{
                 chooseGame();
             }
         });
-        simulationWindow.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
-        simulationWindow.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> System.out.println("Height: " + newSceneHeight));
+        //simulationWindow.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
+        //simulationWindow.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> System.out.println("Height: " + newSceneHeight));
 
         neighborhoodLevelSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
             neighborhoodLevelLabel.setText(String.valueOf(getNeighborhoodLevel()));
@@ -121,7 +120,7 @@ public class Controller implements Initializable{
     }
 
     /**
-     * set or remove intervals betwen cells
+     * set or remove intervals between cells
      */
     public void setInterval(ActionEvent actionEvent) {
         if (isIntervalSet){
@@ -169,8 +168,8 @@ public class Controller implements Initializable{
                 }
 
                 automaton = new GameOfLife(
-                        getCellsWidth(),
-                        getCellsHeigth(),
+                        getColumnQuantity(),
+                        getRowQuantity(),
                         cellMap.translateForAutomaton(),
                         getNeighborhoodLevel());
                 break;
@@ -181,8 +180,8 @@ public class Controller implements Initializable{
                     cellMap = new WireWorldMap(cellMap);
                 }
                 automaton = new WireWorld(
-                        getCellsWidth(),
-                        getCellsHeigth(),
+                        getColumnQuantity(),
+                        getRowQuantity(),
                         cellMap.translateForAutomaton(),
                         getNeighborhoodLevel());
                 break;
@@ -193,10 +192,8 @@ public class Controller implements Initializable{
                     cellMap = new OneDimAutomatonMap(cellMap);
                 }
 
-                //options = new AdditionalOptionsForOneDimAutomaton(this);
-
                 automaton = new OneDimAutomaton(
-                        getCellsWidth(),
+                        getColumnQuantity(),
                         getRule(),
                         cellMap.translateForAutomaton());
                 break;
@@ -234,8 +231,6 @@ public class Controller implements Initializable{
     }
 
     public void setDisable(boolean isLock){
-        columnSlider.setDisable(isLock);
-        rowSlider.setDisable(isLock);
         gameOfLifeRButton.setDisable(isLock);
         neighborhoodLevelSlider.setDisable(isLock);
         langtonAntRButton.setDisable(isLock);
@@ -260,12 +255,12 @@ public class Controller implements Initializable{
         return (int) neighborhoodLevelSlider.getValue();
     }
 
-    public int getCellsWidth(){
-        return (int) rowSlider.getValue();
+    public int getRowQuantity(){
+        return rowNumber;
     }
 
-    public int getCellsHeigth(){
-        return (int) columnSlider.getValue();
+    public int getColumnQuantity(){
+        return columnNumber;
     }
 
     public Pane getSimulationWindow() {
