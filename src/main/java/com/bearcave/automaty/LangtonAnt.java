@@ -49,25 +49,32 @@ public class LangtonAnt extends Automaton2Dim {
 
     protected CellState nextCellState(CellState currentState, Set<CellCoordinates> neighborsStates) {
 
-        if ( antsMap.get(currentState) != AntState.NONE){
-            if ( currentState == BinaryState.ALIVE){
-
-                return BinaryState.DEAD;
+        LangtonState newState = new LangtonState();
+        // if there is ant, in the next generation it disappear
+        if (((LangtonState) currentState).antState != AntState.NONE){
+            if (((LangtonState) currentState).cellState == BinaryState.ALIVE ){
+                newState.cellState = BinaryState.DEAD;
             } else {
-
+                newState.cellState = BinaryState.ALIVE;
             }
+            newState.antState = AntState.NONE;
+            return newState;
         }
 
-        if ( currentState == BinaryState.ALIVE){
-            //ant has to turn left
-            Iterator iterator = neighborsStates.iterator();
-            while (iterator.hasNext()){
 
+        // if cellState = Binary.Alive then turn left
+
+        Iterator<CellCoordinates> iterator = neighborsStates.iterator();
+        while (iterator.hasNext()){
+            CellCoordinates coords = iterator.next();
+            if (((LangtonState) getCellState(coords)).antState != AntState.NONE){  // so on coords there is an ant
+                if ( ((LangtonState) getCellState(coords)).cellState == BinaryState.ALIVE
+                        && ((LangtonState) getCellState(coords)).antState == AntState.EAST
+                        ){
+
+                }
             }
-        } else {
-            //ant has to turn right
-
         }
-        return null;
+        return newState;
     }
 }

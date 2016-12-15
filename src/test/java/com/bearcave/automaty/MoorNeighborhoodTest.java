@@ -28,6 +28,8 @@ public class MoorNeighborhoodTest {
         Assert.assertTrue(set.contains(new Coords2d(width+1, height-1)));
         Assert.assertTrue(set.contains(new Coords2d(width+1, height+1)));
         Assert.assertTrue(set.contains(new Coords2d(width-1, height+1)));
+
+        Assert.assertEquals(8, set.size());
     }
 
     @Test
