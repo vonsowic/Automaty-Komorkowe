@@ -103,9 +103,9 @@ public abstract class CellMap{
             for(int x=0; x<numberOfColumns; x++){
                 Rectangle cell = new Rectangle( cellSize, cellSize, getCellColor(defaultState));
 
-                // if shift is clicked, then draw on pane
+                // if ctrl is clicked, then draw on pane
                 cell.setOnMouseExited(t -> {
-                    if(t.isShiftDown())
+                    if(t.isControlDown())
                         clickOnCell(cell);
                 });
 

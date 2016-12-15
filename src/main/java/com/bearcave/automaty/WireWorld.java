@@ -12,7 +12,7 @@ import static com.bearcave.automaty.QuadState.DEAD;
  */
 public class WireWorld extends Automaton2Dim {
     public WireWorld(int x, int y, Map<CellCoordinates,CellState> initialMap){
-        this.neighborsStrategy = new MoorNeighborhood();
+        this.neighborsStrategy = new MoorNeighborhood(x, y);
         this.setSize(x, y);
 
         Map<CellCoordinates, CellState> map = new HashMap();
@@ -34,7 +34,7 @@ public class WireWorld extends Automaton2Dim {
 
     public WireWorld(int x, int y, Map<CellCoordinates,CellState> initialMap, int levelOfNeighborhood){
         this(x, y, initialMap);
-        this.neighborsStrategy = new MoorNeighborhood(levelOfNeighborhood);
+        this.neighborsStrategy = new MoorNeighborhood(x, y, levelOfNeighborhood);
     }
 
     public WireWorld(int x,

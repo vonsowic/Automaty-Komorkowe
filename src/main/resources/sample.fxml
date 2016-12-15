@@ -7,16 +7,17 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="624.0" prefWidth="598.0" style="-fx-background-color: #EAEAeA;" stylesheets="@material-fx-v0_3.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<AnchorPane prefHeight="624.0" prefWidth="1148.0" style="-fx-background-color: #EAEAeA;" stylesheets="@material-fx-v0_3.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
     <children>
-        <SplitPane dividerPositions="0.29264214046822745" layoutX="-2.0" layoutY="-2.0" prefHeight="624.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.1518324607329843" layoutX="-2.0" layoutY="-2.0" prefHeight="624.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="622.0" prefWidth="276.0">
                     <children>
                         <VBox layoutX="-1.0" layoutY="-1.0" prefHeight="622.0" prefWidth="170.0" styleClass="card" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
@@ -41,47 +42,55 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                     <children>
-                        <SplitPane layoutY="-2.0" orientation="VERTICAL" prefHeight="622.0" prefWidth="416.0">
+                        <SplitPane layoutY="-2.0" orientation="VERTICAL" prefHeight="622.0" prefWidth="968.0">
                             <items>
-                                <AnchorPane prefHeight="610.0" prefWidth="414.0">
+                                <AnchorPane prefHeight="620.0" prefWidth="1033.0">
                                     <children>
                                         <Pane />
-                                        <SplitPane dividerPositions="0.7972270363951474" layoutX="127.0" layoutY="190.0" orientation="VERTICAL" prefHeight="579.0" prefWidth="480.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <SplitPane dividerPositions="0.9563106796116505" layoutX="127.0" layoutY="190.0" orientation="VERTICAL" prefHeight="620.0" prefWidth="676.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-262.0" AnchorPane.topAnchor="0.0">
                                             <items>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="393.0" prefWidth="412.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="476.0" prefWidth="504.0">
                                                     <children>
-                                                        <Pane fx:id="simulationWindow" prefHeight="489.0" prefWidth="412.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                        <Pane fx:id="simulationWindow" prefHeight="481.0" prefWidth="1186.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0" />
                                                     </children></AnchorPane>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="189.0" prefWidth="412.0">
                                        <children>
                                           <HBox layoutX="148.0" layoutY="11.0" prefHeight="121.0" prefWidth="412.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <VBox prefHeight="57.0" prefWidth="200.0">
+                                                <VBox prefHeight="144.0" prefWidth="433.0">
                                                    <children>
                                                       <HBox prefHeight="25.0" prefWidth="200.0">
                                                          <children>
-                                                            <Label text="Stopien sąsiedztwa " />
+                                                            <Label prefHeight="0.0" prefWidth="140.0" text="Stopien sąsiedztwa " />
                                                             <Label fx:id="neighborhoodLevelLabel" prefHeight="18.0" prefWidth="44.0" />
                                                          </children>
                                                       </HBox>
                                                       <Slider fx:id="neighborhoodLevelSlider" blockIncrement="1.0" max="10" min="1" value="1" />
                                                       <HBox prefHeight="100.0" prefWidth="200.0">
                                                          <children>
-                                                            <Label text="Zasada: " />
+                                                            <Label text="Zasada(tylko jednowymiarowego automatu): " />
                                                             <Label fx:id="ruleLabel" prefHeight="18.0" prefWidth="85.0" />
                                                          </children>
                                                       </HBox>
-                                                      <Slider fx:id="ruleSlider" blockIncrement="1" max="255" value="30" />
+                                                      <Slider fx:id="ruleSlider" blockIncrement="1" disable="true" max="255" value="30" />
+                                                      <Label text="Zadada ( tylko dla Gry w Życie)" />
+                                                      <HBox prefHeight="100.0" prefWidth="200.0">
+                                                         <children>
+                                                            <TextField fx:id="liveRule" prefHeight="34.0" prefWidth="55.0" />
+                                                            <Label prefHeight="40.0" prefWidth="5.0" text="/" />
+                                                            <TextField fx:id="deathRule" prefHeight="34.0" prefWidth="71.0" />
+                                                         </children>
+                                                      </HBox>
                                                    </children></VBox>
-                                                <VBox fx:id="additionalOptionsBox" prefHeight="121.0" prefWidth="214.0">
+                                                <VBox fx:id="additionalOptionsBox" prefHeight="134.0" prefWidth="535.0">
                                                    <children>
                                                       <HBox prefHeight="27.0" prefWidth="213.0">
                                                          <children>
                                                             <Label text="Generacja: " />
-                                                            <Label fx:id="generationLabel" prefHeight="18.0" prefWidth="18.0" text="0" />
+                                                            <Label fx:id="generationLabel" prefHeight="16.0" prefWidth="114.0" text="0" />
                                                          </children>
                                                       </HBox>
-                                                      <TextArea editable="false" prefHeight="200.0" prefWidth="200.0" text="Aby rysować, przytrzymaj Shift" />
+                                                      <TextArea editable="false" prefHeight="110.0" prefWidth="533.0" text="Aby rysować, przytrzymaj ctrl" />
                                                    </children></VBox>
                                              </children>
                                           </HBox>

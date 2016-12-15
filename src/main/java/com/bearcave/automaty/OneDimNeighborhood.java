@@ -9,12 +9,15 @@ import java.util.Set;
 public class OneDimNeighborhood implements CellNeighborhood {
 
     private int n ;
+    private int size;
 
-    public OneDimNeighborhood(){
+    public OneDimNeighborhood(int size) {
+        this.size = size;
         n = 1;
     }
 
-    public OneDimNeighborhood(int n){
+    public OneDimNeighborhood(int size, int n){
+        this.size = size;
         if(n>0)
             this.n = n;
         else

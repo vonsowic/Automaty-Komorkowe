@@ -73,8 +73,6 @@ public class OneDimAutomatonMap extends CellMap {
                     .get(entry.getKey().getX())
                     .setFill(getCellColor(entry.getValue()));
         }
-
-        Automaton.printMap(translateForAutomaton());
     }
 
 

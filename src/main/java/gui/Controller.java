@@ -34,11 +34,14 @@ public class Controller implements Initializable{
 
     @FXML private Label neighborhoodLevelLabel;
 
-    @FXML private VBox additionalOptionsBox;
     @FXML private Label ruleLabel;
     @FXML private Slider ruleSlider;
 
     @FXML private Label generationLabel;
+
+    @FXML private TextField liveRule;
+    @FXML private TextField deathRule;
+
     private int generation = 0;
 
     public final static int GAMEOFLIFE = 1;
@@ -46,8 +49,8 @@ public class Controller implements Initializable{
     public final static int WIREWORLD = 3;
     public final static int ONEDIMAUTOMATON = 4;
 
-    private int columnNumber = 33;
-    private int rowNumber = 40;
+    private int columnNumber = 80;
+    private int rowNumber = 50;
 
 
     protected Automaton automaton = null;
@@ -72,8 +75,6 @@ public class Controller implements Initializable{
                 chooseGame();
             }
         });
-        //simulationWindow.widthProperty().addListener((observableValue, oldSceneWidth, newSceneWidth) -> System.out.println("Width: " + newSceneWidth));
-        //simulationWindow.heightProperty().addListener((observableValue, oldSceneHeight, newSceneHeight) -> System.out.println("Height: " + newSceneHeight));
 
         neighborhoodLevelSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
             neighborhoodLevelLabel.setText(String.valueOf(getNeighborhoodLevel()));
@@ -171,7 +172,9 @@ public class Controller implements Initializable{
                         getColumnQuantity(),
                         getRowQuantity(),
                         cellMap.translateForAutomaton(),
-                        getNeighborhoodLevel());
+                        getNeighborhoodLevel(),
+                        liveRule.getText(),
+                        deathRule.getText());
                 break;
             case WIREWORLD:
                 if (cellMap == null){
@@ -273,10 +276,6 @@ public class Controller implements Initializable{
 
     public int getRule(){
         return (int) ruleSlider.getValue();
-    }
-
-    public VBox getAdditionalOptionsBox() {
-        return additionalOptionsBox;
     }
 
     private void incrementGeneration(){

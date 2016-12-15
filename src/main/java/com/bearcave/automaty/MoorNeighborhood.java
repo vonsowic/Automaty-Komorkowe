@@ -11,13 +11,17 @@ public class MoorNeighborhood implements CellNeighborhood {
     /**
      * n equals the level of neighborhood
      */
-    private int n ;
+    private int n, lastX, lastY ;
 
-    public MoorNeighborhood(){
+    public MoorNeighborhood(int lastX, int lastY){
+        this.lastX = lastX;
+        this.lastY = lastY;
         n = 1;
     }
 
-    public MoorNeighborhood(int n){
+    public MoorNeighborhood(int lastX, int lastY, int n){
+        this.lastX = lastX;
+        this.lastY = lastY;
         if(n>0)
             this.n = n;
         else
@@ -37,16 +41,23 @@ public class MoorNeighborhood implements CellNeighborhood {
                 if (i!=0 || j!=0){
                     int x = cell.getX()+i;
                     int y = cell.getY()+j;
-                    if ( x>=0 && y>=0){
-                        neighbors.add(new Coords2d(x, y));
+                    if (x < 0){
+                        x += lastX ;
                     }
+                    if ( x >= lastX){
+                        x -= lastX;
+                    }
+                    if ( y < 0){
+                        y+=lastY ;
+                    }
+                    if ( y >= lastY){
+                        y -= lastY;
+                    }
+                    neighbors.add(new Coords2d(x, y));
                 }
             }
         }
 
         return neighbors;
     }
-
-
-
 }

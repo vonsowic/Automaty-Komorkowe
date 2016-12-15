@@ -19,7 +19,7 @@ public class VonNeumanNeighborhoodTest {
 
         int width = 4, height=5;
 
-        VonNeumanNeighborhood vonNeumanNeighborhood = new VonNeumanNeighborhood();
+        VonNeumanNeighborhood vonNeumanNeighborhood = new VonNeumanNeighborhood(100, 100);
         Set set = vonNeumanNeighborhood.cellNeighbors(new Coords2d(width, height));
 
         Assert.assertTrue(set.contains(new Coords2d(width-1, height)));
@@ -34,7 +34,7 @@ public class VonNeumanNeighborhoodTest {
 
         int width = 13, height=5;
 
-        VonNeumanNeighborhood vonNeumanNeighborhood = new VonNeumanNeighborhood(2);
+        VonNeumanNeighborhood vonNeumanNeighborhood = new VonNeumanNeighborhood(100, 100, 2);
         Set set = vonNeumanNeighborhood.cellNeighbors(new Coords2d(width, height));
 
         Assert.assertTrue(set.contains(new Coords2d(width-1, height)));

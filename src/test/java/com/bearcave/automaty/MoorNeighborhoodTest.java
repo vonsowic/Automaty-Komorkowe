@@ -17,7 +17,7 @@ public class MoorNeighborhoodTest {
         int width =24;
         int height = 42;
 
-        CellNeighborhood moorNeighborhood = new MoorNeighborhood();
+        CellNeighborhood moorNeighborhood = new MoorNeighborhood(100, 100);
         Set set = moorNeighborhood.cellNeighbors(new Coords2d(width, height));
 
         Assert.assertTrue(set.contains(new Coords2d(width-1, height)));
@@ -38,7 +38,7 @@ public class MoorNeighborhoodTest {
         int width =9;
         int height = 17;
 
-        CellNeighborhood moorNeighborhood = new MoorNeighborhood(2);
+        CellNeighborhood moorNeighborhood = new MoorNeighborhood(100, 100, 2);
         Set set = moorNeighborhood.cellNeighbors(new Coords2d(width, height));
 
         Assert.assertTrue(set.contains(new Coords2d(width-1, height)));

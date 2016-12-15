@@ -2,8 +2,10 @@ group 'projekt Automaty Komorkowe'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
-
+apply plugin: 'application'
 sourceCompatibility = 1.8
+
+mainClassName = 'gui.AutomatonGUI'
 
 repositories {
     mavenCentral()
@@ -11,4 +13,16 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+configurations {
+    jaxDoclet
+}
+
+task generateRestApiDocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    destinationDir = reporting.file("rest-api-docs")
+    options.docletpath = configurations.jaxDoclet.files.asType(List)
+    options.doclet = "com.lunatech.doclets.jax.jaxrs.JAXRSDoclet"
+    options.addStringOption("jaxrscontext", "http://localhost:8080/myapp")
 }

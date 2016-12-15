@@ -30,27 +30,20 @@ public abstract class Automaton {
     public Automaton nextState(){
 
         Automaton automaton = newInstance();
-        CellCoordinates coord = initialCoordinates();
+        CellCoordinates coords = initialCoordinates();
         boolean endLoop = false;
-        System.out.println("Obecny stan \n ----------------------------------------------");
-        printMap(cells);
         while ( !endLoop ){
             automaton.cells.put(
-                    coord,
+                    coords,
                     nextCellState(
-                            cells.get(coord),
-                            neighborsStrategy.cellNeighbors(coord)));
+                            cells.get(coords),
+                            neighborsStrategy.cellNeighbors(coords)));
 
-            if ( hasNextCoordinates(coord))
-                coord = nextCoordinates(coord);
+            if ( hasNextCoordinates(coords))
+                coords = nextCoordinates(coords);
             else
                 endLoop = true;
         }
-
-        System.out.println(" ----------------------------------------------\nPo obliczeniu");
-        printMap(automaton.cells);
-        System.out.println(" ----------------------------------------------");
-
 
         return automaton;
     }

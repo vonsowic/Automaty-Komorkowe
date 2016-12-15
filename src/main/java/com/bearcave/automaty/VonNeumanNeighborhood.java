@@ -13,12 +13,17 @@ public class VonNeumanNeighborhood implements CellNeighborhood {
      * n equals the level of neighborhood
      */
     private int n ;
+    private int lastX, lastY;
 
-    public VonNeumanNeighborhood(){
+    public VonNeumanNeighborhood(int lastX, int lastY){
+        this.lastX = lastX;
+        this.lastY = lastY;
         n = 1;
     }
 
-    public VonNeumanNeighborhood(int n){
+    public VonNeumanNeighborhood(int lastX, int lastY, int n){
+        this.lastX = lastX;
+        this.lastY = lastY;
         if(n>0)
             this.n = n;
         else
@@ -35,7 +40,15 @@ public class VonNeumanNeighborhood implements CellNeighborhood {
             for (int j=-i-n; j<=i+n; j++){
                 //warunek uniemozliwia dodanie samego siebie
                 if (i!=0 || j!=0){
-                    neighbors.add(new Coords2d(cell.getX()+i, cell.getY()+j));
+                    CellCoordinates cellCoordinates = new Coords2d(cell.getX()+i, cell.getY()+j);
+                    if (cellCoordinates.getX() < 0){
+                        cellCoordinates.setX(lastX + cellCoordinates.getX() );
+                    }
+                    if (cellCoordinates.getX() >= lastX){
+                        cellCoordinates.setX(cellCoordinates.getX() - lastX);
+                    }
+                    neighbors.add(cellCoordinates);
+
                 }
             }
         }

@@ -1,14 +1,14 @@
 package com.bearcave.automaty;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by miwas on 05.11.16.
  */
 public class GameOfLife extends Automaton2Dim {
+
+    static TreeSet<Integer> liveRule;
+    static TreeSet<Integer> deathRule;
 
     public GameOfLife(int x,
                       int y,
@@ -22,15 +22,11 @@ public class GameOfLife extends Automaton2Dim {
         insertStructure(previousMap);
     }
 
-    public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap, int levelOfNeighborhood){
-        this(x, y, initialMap);
-        this.neighborsStrategy = new MoorNeighborhood(levelOfNeighborhood);
-    }
-
     public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap){
 
-        this.neighborsStrategy = new MoorNeighborhood();
         this.setSize(x, y);
+        this.neighborsStrategy = new MoorNeighborhood(getWidth(), getHeight());
+
 
         Map<CellCoordinates, CellState> map = new HashMap();
         if (initialMap == null){
@@ -46,7 +42,40 @@ public class GameOfLife extends Automaton2Dim {
             }
         }
 
+        this.liveRule = new TreeSet<>();
+        this.liveRule.add(2);
+        this.liveRule.add(3);
+
+        this.deathRule = new TreeSet<>();
+        this.deathRule.add(3);
+
         insertStructure(map);
+    }
+
+    public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap, int levelOfNeighborhood){
+        this(x, y, initialMap);
+        this.neighborsStrategy = new MoorNeighborhood(getWidth(), getHeight(), levelOfNeighborhood);
+    }
+
+    public GameOfLife(int x, int y, Map<CellCoordinates,CellState> initialMap, int levelOfNeighborhood, String liveRule, String deathRule){
+        this(x, y, initialMap, levelOfNeighborhood);
+        if ( !liveRule.isEmpty()){
+            this.liveRule = new TreeSet<>();
+            Integer pom = Integer.valueOf(liveRule);
+            while( pom>0 ){
+                this.liveRule.add(pom%10);
+                pom/=10;
+            }
+        }
+
+        if ( !deathRule.isEmpty()){
+            this.deathRule = new TreeSet<>();
+            Integer pom = Integer.valueOf(deathRule);
+            while( pom>0 ){
+                this.deathRule.add(pom%10);
+                pom/=10;
+            }
+        }
     }
 
     protected Automaton newInstance() {
@@ -79,13 +108,13 @@ public class GameOfLife extends Automaton2Dim {
 
         //zwracany wynik zgodnie z zasadami gry
         if ( currentState == BinaryState.ALIVE){
-            if (living_neighbors == 2 || living_neighbors == 3){
+            if (liveRule.contains(living_neighbors)){
                 return BinaryState.ALIVE;
             } else {
                 return BinaryState.DEAD;
             }
         } else {
-            if ( living_neighbors == 3){
+            if ( deathRule.contains( living_neighbors)){
                 return BinaryState.ALIVE;
             } else {
                 return BinaryState.DEAD;

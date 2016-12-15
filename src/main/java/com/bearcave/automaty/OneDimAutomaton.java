@@ -18,7 +18,7 @@ public class OneDimAutomaton extends Automaton1Dim {
         this.setSize(size);
         this.rule = new Rule(rule);
 
-        neighborsStrategy = new OneDimNeighborhood();
+        neighborsStrategy = new OneDimNeighborhood(size);
 
         if (initialMap == null){
             initialMap = new HashMap<>();
@@ -39,7 +39,7 @@ public class OneDimAutomaton extends Automaton1Dim {
         this.setSize(size);
         this.rule = rule;
 
-        neighborsStrategy = new OneDimNeighborhood();
+        neighborsStrategy = new OneDimNeighborhood(size);
 
         Map<CellCoordinates, CellState> initialMap = new HashMap<>();
         for( int i=0; i<size; i++){

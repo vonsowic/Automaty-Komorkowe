@@ -7,15 +7,15 @@ import java.util.*;
  */
 public class LangtonAnt extends Automaton2Dim {
 
-    private Map<CellCoordinates, AntState> antsMap;
+    private Map<CellCoordinates, LangtonState> antsMap;
 
     public LangtonAnt(
             int x,
             int y,
             Map<CellCoordinates,CellState> initialMap,
-            Map<CellCoordinates,AntState> antsMap){
+            Map<CellCoordinates,LangtonState> antsMap){
 
-        this.neighborsStrategy = new VonNeumanNeighborhood();
+        this.neighborsStrategy = new VonNeumanNeighborhood(x, y);
         this.setSize(x, y);
 
         Map<CellCoordinates, CellState> map = new HashMap();
@@ -48,33 +48,13 @@ public class LangtonAnt extends Automaton2Dim {
     }
 
     protected CellState nextCellState(CellState currentState, Set<CellCoordinates> neighborsStates) {
-
-        LangtonState newState = new LangtonState();
-        // if there is ant, in the next generation it disappear
-        if (((LangtonState) currentState).antState != AntState.NONE){
-            if (((LangtonState) currentState).cellState == BinaryState.ALIVE ){
-                newState.cellState = BinaryState.DEAD;
-            } else {
-                newState.cellState = BinaryState.ALIVE;
-            }
-            newState.antState = AntState.NONE;
-            return newState;
-        }
-
-
-        // if cellState = Binary.Alive then turn left
-
-        Iterator<CellCoordinates> iterator = neighborsStates.iterator();
-        while (iterator.hasNext()){
-            CellCoordinates coords = iterator.next();
-            if (((LangtonState) getCellState(coords)).antState != AntState.NONE){  // so on coords there is an ant
-                if ( ((LangtonState) getCellState(coords)).cellState == BinaryState.ALIVE
-                        && ((LangtonState) getCellState(coords)).antState == AntState.EAST
-                        ){
-
-                }
-            }
-        }
-        return newState;
+        return null;
     }
+
+    @Override
+    protected boolean hasNextCoordinates(CellCoordinates coords) {
+        return super.hasNextCoordinates(coords);
+    }
+
+
 }
