@@ -23,6 +23,7 @@ public class GameOfLifeMap extends CellMap {
         changeMap();
     }
 
+
     @Override
     protected void createCellDictionary() {
         super.createCellDictionary();

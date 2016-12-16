@@ -3,8 +3,15 @@ package com.bearcave.automaty;
 import java.util.Set;
 
 /**
- * Created by miwas on 05.11.16.
+ * Interface used for getting neighbors of cell
+ * @author Michał Wąsowicz
+ * @version 1.0
  */
 public interface CellNeighborhood {
-    public Set<CellCoordinates> cellNeighbors(CellCoordinates cell);
+
+    /**
+     * @param cell - used as parameter to calculate neighbors' coordinates
+     * @return set with neighbors' coordinates
+     */
+    Set<CellCoordinates> cellNeighbors(CellCoordinates cell);
 }

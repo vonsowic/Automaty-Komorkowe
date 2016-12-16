@@ -3,8 +3,9 @@ package com.bearcave.automaty;
 import java.util.ArrayList;
 
 /**
- * Created by miwas on 10.12.16.
  * Set rule for OneDimAutomaton
+ *
+ * Created by miwas on 10.12.16.
  */
 public class Rule {
     private ArrayList<Integer> rules;

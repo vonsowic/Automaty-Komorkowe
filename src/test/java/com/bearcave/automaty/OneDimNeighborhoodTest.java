@@ -15,7 +15,7 @@ public class OneDimNeighborhoodTest {
     public void cellNeighbors() throws Exception {
 
         int x = 42;
-        CellNeighborhood oneDimNeighborhood = new OneDimNeighborhood();
+        CellNeighborhood oneDimNeighborhood = new OneDimNeighborhood(100);
         Set set = oneDimNeighborhood.cellNeighbors(new Coords1D(x));
 
         Assert.assertTrue(set.contains(new Coords1D(x-1)));
@@ -27,7 +27,7 @@ public class OneDimNeighborhoodTest {
     public void cellFurtherNeighbors() throws Exception {
 
         int x = 89;
-        CellNeighborhood oneDimNeighborhood = new OneDimNeighborhood(2);
+        CellNeighborhood oneDimNeighborhood = new OneDimNeighborhood(100, 2);
         Set set = oneDimNeighborhood.cellNeighbors(new Coords1D(x));
 
         Assert.assertTrue(set.contains(new Coords1D(x-1)));
