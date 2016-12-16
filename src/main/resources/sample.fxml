@@ -72,7 +72,7 @@
                                                             <Label fx:id="ruleLabel" prefHeight="18.0" prefWidth="85.0" />
                                                          </children>
                                                       </HBox>
-                                                      <Slider fx:id="ruleSlider" blockIncrement="1" disable="true" max="255" value="30" />
+                                                      <Slider fx:id="ruleSlider" blockIncrement="1" max="255" value="30" />
                                                       <Label text="Zadada ( tylko dla Gry w Życie)" />
                                                       <HBox prefHeight="100.0" prefWidth="200.0">
                                                          <children>

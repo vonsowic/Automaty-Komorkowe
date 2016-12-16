@@ -6,6 +6,9 @@ import java.util.ArrayList;
  * Set rule for OneDimAutomaton
  *
  * Created by miwas on 10.12.16.
+ *
+ * @see OneDimAutomaton
+ *
  */
 public class Rule {
     private ArrayList<Integer> rules;
